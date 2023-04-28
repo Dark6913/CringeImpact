@@ -1,0 +1,155 @@
+#include "Client.hpp"
+#include "Chest.hpp"
+#include "Entity.hpp"
+#include "Player.hpp"
+#include "Enemy.hpp"
+
+Client::Client()
+{
+	m_window.create(sf::VideoMode(1600, 800), "Cringe Impact");
+	m_window.setMouseCursorVisible(false);
+
+	m_cursor.loadFromFile("data/textures/cursor.png");
+	m_cursor.setCursorStyle(Cursor::ARROW);
+	m_world.loadFromFile("data/map/Map.tmx");
+
+	m_camera.setSize((sf::Vector2f)m_window.getSize());
+	m_camera.setCenter(m_world.getSpawnPoint());
+
+	m_font.loadFromFile("data/fonts/Jost-Regular.ttf");
+	m_fps.setFont(m_font);
+	m_fps.setFillColor(sf::Color(255, 255, 255));
+	m_fps.setPosition(sf::Vector2f(50, 10));
+	m_fps.setCharacterSize(20u);
+}
+
+void Client::run()
+{
+	std::list<MapObject*>& nature = m_world.getNatureList();
+	std::list<MapObject*>& loot = m_world.getLootList();
+	std::list<Solid*> solid_objects;
+	std::list<IAnimated*> animated_objects;
+	solid_objects.push_back((Solid*)&m_world);
+	for (auto it = nature.begin(); it != nature.end(); it++)
+	{
+		solid_objects.push_back((Solid*)*it);
+		animated_objects.push_back((IAnimated*)*it);
+	}
+	for (auto it = loot.begin(); it != loot.end(); it++)
+	{
+		solid_objects.push_back((Solid*)*it);
+		animated_objects.push_back((IAnimated*)*it);
+	}
+
+	// THE BUG
+	// sf::Vector2f(3357.49878, 9413.87305)
+	Player player;
+	player.setPosition(m_world.getSpawnPoint());
+	animated_objects.push_back((IAnimated*)&player);
+
+	Enemy enemy1;
+	enemy1.setPosition(m_world.getSpawnPoint() + sf::Vector2f(750, 300));
+	animated_objects.push_back((IAnimated*)&enemy1);
+	solid_objects.push_back((Solid*)&enemy1);
+
+	//sf::Music music;
+	//music.openFromFile("data/sound/relax_2.ogg");
+	//music.setLoop(true);
+	//music.setVolume(20);
+	//music.play();
+	
+	sf::Clock clock;
+	while (m_window.isOpen())
+	{
+		float tick = clock.restart().asSeconds();
+		m_fps.setString("FPS: " + std::to_string((int)round(1.f / tick)));
+
+		sf::Event event;
+		while (m_window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed) m_window.close();
+			if (event.type == sf::Event::KeyPressed)
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) m_window.close();
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+				{
+					for (auto it = loot.begin(); it != loot.end(); it++)
+					{
+						Chest* chest = (Chest*)*it;
+						if (VectorModule(chest->getCenter() - player.getPosition()) <= 80.f)
+						{
+							chest->toggle();
+							break;
+						}
+					}
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+				{
+					enemy1.attack();
+					if (VectorModule(enemy1.getPosition() - player.getPosition()) < 80.f) player.die();
+				}
+			}
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					player.attack();
+					if (VectorModule(enemy1.getPosition() - player.getPosition()) < 80.f) enemy1.die();
+				}
+			}
+		}
+
+		player.control(tick, this->getAbsoluteCursorPosition(), solid_objects);
+		m_camera.setCenter(RoundVector(player.getPosition()));
+
+		m_world.setCameraRect(this->getCameraRect());
+		m_world.update();
+		m_cursor.setPosition(this->getRelativeCursorPosition());
+
+		m_window.setView(m_camera);
+		m_window.clear();
+		m_window.draw(m_world);
+
+		for (auto it = loot.begin(); it != loot.end(); it++)
+			(*it)->setListenerPosition(player.getPosition());
+
+		animated_objects.sort([](IAnimated* a, IAnimated* b) {
+			return a->getVisibleBounds().top + a->getVisibleBounds().height < b->getVisibleBounds().top + b->getVisibleBounds().height;
+		});
+		for (auto it = animated_objects.begin(); it != animated_objects.end(); it++)
+		{
+			(*it)->update(tick);
+			m_window.draw(**it);
+		}
+
+		this->drawInterface();
+		m_window.display();
+	}
+	m_world.release();
+	Animation::relese();
+}
+
+void Client::drawInterface()
+{
+	m_window.setView(m_window.getDefaultView());
+	// Draw iterface below
+	m_window.draw(m_fps);
+	m_window.draw(m_cursor);
+
+	m_window.setView(m_camera);
+}
+
+sf::Vector2f Client::getRelativeCursorPosition()
+{
+	return (sf::Vector2f)sf::Mouse::getPosition(m_window);
+}
+
+sf::Vector2f Client::getAbsoluteCursorPosition()
+{
+	return (sf::Vector2f)sf::Mouse::getPosition(m_window) + m_camera.getCenter() - (m_camera.getSize() / 2.f);
+}
+
+sf::IntRect Client::getCameraRect()
+{
+	return sf::IntRect((sf::Vector2i)(m_camera.getCenter() - (m_camera.getSize() / 2.f)), (sf::Vector2i)m_camera.getSize());
+}

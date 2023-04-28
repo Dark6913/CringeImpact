@@ -1,0 +1,68 @@
+#pragma once
+#include "SFML/Graphics.hpp"
+#include "MapObject.hpp"
+#include "Solid.hpp"
+
+class Entity : public MapObject
+{
+protected:
+
+	enum Movement : uint8_t
+	{
+		MOVE_TOP,
+		MOVE_RIGHT,
+		MOVE_LEFT,
+		MOVE_BOTTOM,
+		STAY_RIGHT,
+		STAY_LEFT
+	};
+
+	enum Death : uint8_t
+	{
+		DIE_RIGHT = 1U,
+		DIE_LEFT = 2U
+	};
+
+	enum Fight : uint8_t
+	{
+		ATTACK_TOP,
+		ATTACK_RIGHT,
+		ATTACK_BOTTOM,
+		ATTACK_LEFT
+	};
+	
+public:
+	Entity();
+	void setMaxHP(uint32_t value) { m_max_hp = value; };
+	void setHP(uint32_t value) { m_current_hp = value; };
+	void setMaxMP(uint32_t value) { m_max_mp = value; };
+	void setMP(uint32_t value) { m_current_mp = value; };
+	void setMaxStamina(uint32_t value) { m_max_stamina = value; };
+	void setStamina(uint32_t value) { m_current_stamina = value; };
+	void move(sf::Vector2f delta);
+	void attack();
+	void die();
+	bool isDead();
+	virtual void update(float tick) override;
+protected:
+	bool m_is_attack_sound_playing;
+	sf::Sound* m_attack_sound_ptr;
+	sf::Sound* m_death_sound_ptr;
+
+	uint32_t m_max_hp;
+	uint32_t m_current_hp;
+	uint32_t m_max_mp;
+	uint32_t m_current_mp;
+	uint32_t m_max_stamina;
+	uint32_t m_current_stamina;
+
+	Animation m_move_anim;
+	Animation m_die_anim;
+	Animation m_attack_anim;
+	Movement m_last_move_dir;
+
+	float m_speed;
+	bool m_is_attacking;
+	bool m_is_dead;
+	float m_vision_angle;
+};
