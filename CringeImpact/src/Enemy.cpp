@@ -96,7 +96,7 @@ void Enemy::behave(float tick, std::list<Solid*>& solid_list)
 {
 	if (m_walk_timer >= m_walk_cd)
 	{
-		srand(time(0));
+		srand(time(0) - rand());
 		float angle = (float)((rand() + rand()) % 361) / 180.f * M_PI;
 		float distance = (float)((rand() + rand()) % (int)m_living_area_radius);
 		this->moveTo(sf::Vector2f(m_living_area_center.x + distance * cos(angle), m_living_area_center.y + distance * sin(angle)));

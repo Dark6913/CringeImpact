@@ -50,9 +50,19 @@ void Client::run()
 	solid_objects.push_back((Solid*)&player);
 
 	Enemy enemy1;
-	enemy1.setPosition(m_world.getSpawnPoint() + sf::Vector2f(750, 300));
+	enemy1.setPosition(m_world.getSpawnPoint() + sf::Vector2f(800, 250));
 	animated_objects.push_back((IAnimated*)&enemy1);
 	solid_objects.push_back((Solid*)&enemy1);
+
+	Enemy enemy2;
+	enemy2.setPosition(m_world.getSpawnPoint() + sf::Vector2f(750, 300));
+	animated_objects.push_back((IAnimated*)&enemy2);
+	solid_objects.push_back((Solid*)&enemy2);
+
+	Enemy enemy3;
+	enemy3.setPosition(m_world.getSpawnPoint() + sf::Vector2f(850, 600));
+	animated_objects.push_back((IAnimated*)&enemy3);
+	solid_objects.push_back((Solid*)&enemy3);
 
 	sf::CircleShape cs;
 	cs.setFillColor(sf::Color::Transparent);
@@ -63,6 +73,8 @@ void Client::run()
 	cs.setOutlineThickness(1);
 
 	enemy1.setLivingArea(cs.getPosition(), cs.getRadius());
+	enemy2.setLivingArea(cs.getPosition(), cs.getRadius());
+	enemy3.setLivingArea(cs.getPosition(), cs.getRadius());
 
 	//sf::Music music;
 	//music.openFromFile("data/sound/relax_2.ogg");
@@ -110,6 +122,8 @@ void Client::run()
 
 		player.control(tick, this->getAbsoluteCursorPosition(), solid_objects);
 		enemy1.behave(tick, solid_objects);
+		enemy2.behave(tick, solid_objects);
+		enemy3.behave(tick, solid_objects);
 		m_camera.setCenter(RoundVector(player.getPosition()));
 
 		m_world.setCameraRect(this->getCameraRect());
@@ -123,6 +137,8 @@ void Client::run()
 		for (auto it = loot.begin(); it != loot.end(); it++)
 			(*it)->setListenerPosition(player.getPosition());
 		enemy1.setListenerPosition(player.getPosition());
+		enemy2.setListenerPosition(player.getPosition());
+		enemy3.setListenerPosition(player.getPosition());
 
 		animated_objects.sort([](IAnimated* a, IAnimated* b) {
 			return a->getVisibleBounds().top + a->getVisibleBounds().height < b->getVisibleBounds().top + b->getVisibleBounds().height;
