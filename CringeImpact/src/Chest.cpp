@@ -54,9 +54,8 @@ void Chest::update(float tick)
 {
 	if (!m_was_open && m_is_open && this->m_animation_ptr->playInStraightOrder(tick)) m_was_open = m_is_open;
 	else if (m_was_open && !m_is_open && this->m_animation_ptr->playInReverseOrder(tick)) m_was_open = m_is_open;
-	float volume = (500.f - VectorModule(m_listener_position - this->getCenter())) / 5.f;
+	float volume = 40.f * (1.f - VectorModule(m_listener_position - this->getCenter()) / 1000.f);
 	if (volume <= 0.f) volume = 0.f;
-	else if (volume > 40.f) volume = 40.f;
 	m_sound.setVolume(volume);
 }
 

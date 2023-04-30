@@ -93,5 +93,5 @@ void MapObject::update(float tick)
 
 void MapObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	if (m_animation_ptr) target.draw(*m_animation_ptr);
+	if (m_animation_ptr) target.draw(*m_animation_ptr, states);
 }
