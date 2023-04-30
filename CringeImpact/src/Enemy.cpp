@@ -1,10 +1,15 @@
 #include "Enemy.hpp"
+#include "VectorMath.hpp"
 
 sf::SoundBuffer* Enemy::m_death_buffer = NULL;
 uint32_t Enemy::m_instances_count = 0;
 
 Enemy::Enemy()
 {
+	m_move_distance = 0;
+	is_have_to_move = false;
+	m_speed = 300.f;
+
 	// Move animation
 	m_animation_ptr = &m_move_anim;
 	m_move_anim.loadFromFile("data/textures/coal/Tleiushiy_tileset(walk).png", 4, 6, 0.2f);
@@ -41,6 +46,50 @@ Enemy::Enemy()
 	m_death_sound.setLoop(false);
 	m_death_sound_ptr = &m_death_sound;
 	m_instances_count++;
+}
+
+void Enemy::moveTo(sf::Vector2f point)
+{
+	is_have_to_move = true;
+	m_move_distance = VectorModule(point - m_position);
+	m_vision_angle = VectorArgument(point - m_position);
+
+	switch (this->getVisionSector())
+	{
+	case WATCH_RIGHT:
+		m_animation_ptr->setCurrentRow(MOVE_RIGHT);
+		break;
+	case WATCH_LEFT:
+		m_animation_ptr->setCurrentRow(MOVE_LEFT);
+		break;
+	case WATCH_TOP:
+		m_animation_ptr->setCurrentRow(MOVE_TOP);
+		break;
+	case WATCH_DOWN:
+		m_animation_ptr->setCurrentRow(MOVE_BOTTOM);
+		break;
+	default: break;
+	}
+
+	if (m_vision_angle > M_PI_2 && m_vision_angle < M_3_PI_2) m_last_move_dir = MOVE_LEFT;
+	else m_last_move_dir = MOVE_RIGHT;
+}
+
+void Enemy::behave(float tick)
+{
+	if (is_have_to_move)
+	{
+		sf::Vector2f delta_move = sf::Vector2f(m_speed * cos(m_vision_angle) * tick, m_speed * sin(m_vision_angle) * tick);
+		this->move(delta_move);
+		m_move_distance -= VectorModule(delta_move);
+
+		if (m_move_distance <= 0)
+		{
+			m_move_distance = 0;
+			is_have_to_move = false;
+			m_animation_ptr->setCurrentRow(m_last_move_dir + 3);
+		}
+	}
 }
 
 Enemy::~Enemy()

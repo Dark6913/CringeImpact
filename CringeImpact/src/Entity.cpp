@@ -1,11 +1,6 @@
 #include "Entity.hpp"
 #include "VectorMath.hpp"
 
-#define M_7_PI_4		5.49778714378
-#define M_3_PI_4		2.35619449019
-#define M_5_PI_4		3.92699081699
-#define M_3_PI_2		4.71238898038
-
 Entity::Entity()
 {
 	m_max_hp = 0;
@@ -36,10 +31,23 @@ void Entity::attack()
 		m_animation_ptr = &m_attack_anim;
 		m_animation_ptr->reset();
 		m_animation_ptr->setPosition(m_position);
-		if (m_vision_angle >= M_7_PI_4 || m_vision_angle <= M_PI_4) m_animation_ptr->setCurrentRow(ATTACK_RIGHT);
-		else if (m_vision_angle > M_PI_4 && m_vision_angle < M_3_PI_4) m_animation_ptr->setCurrentRow(ATTACK_BOTTOM);
-		else if (m_vision_angle >= M_3_PI_4 && m_vision_angle <= M_5_PI_4) m_animation_ptr->setCurrentRow(ATTACK_LEFT);
-		else if (m_vision_angle > M_5_PI_4 && m_vision_angle < M_7_PI_4) m_animation_ptr->setCurrentRow(ATTACK_TOP);
+		
+		switch (this->getVisionSector())
+		{
+		case WATCH_RIGHT:
+			m_animation_ptr->setCurrentRow(ATTACK_RIGHT);
+			break;
+		case WATCH_LEFT:
+			m_animation_ptr->setCurrentRow(ATTACK_LEFT);
+			break;
+		case WATCH_TOP:
+			m_animation_ptr->setCurrentRow(ATTACK_TOP);
+			break;
+		case WATCH_DOWN:
+			m_animation_ptr->setCurrentRow(ATTACK_BOTTOM);
+			break;
+		default: break;
+		}
 
 		if (m_vision_angle >= M_3_PI_2 || m_vision_angle <= M_PI_2) m_last_move_dir = MOVE_RIGHT;
 		else m_last_move_dir = MOVE_LEFT;
@@ -92,4 +100,12 @@ void Entity::update(float tick)
 			m_animation_ptr->playInStraightOrder(tick);
 		}
 	}
+}
+
+Entity::VisionDir Entity::getVisionSector()
+{
+	if (m_vision_angle >= M_7_PI_4 || m_vision_angle <= M_PI_4) return WATCH_RIGHT;
+	else if (m_vision_angle > M_PI_4 && m_vision_angle < M_3_PI_4) return WATCH_DOWN;
+	else if (m_vision_angle >= M_3_PI_4 && m_vision_angle <= M_5_PI_4) return WATCH_LEFT;
+	else return WATCH_TOP;
 }

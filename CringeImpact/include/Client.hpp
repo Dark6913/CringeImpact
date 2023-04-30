@@ -3,7 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include "World.hpp"
 #include "MapObject.hpp"
-#include "Cursor.hpp"
 
 class Client
 {
@@ -12,7 +11,7 @@ public:
 	void run();
 private:
 	sf::RenderWindow m_window;
-	Cursor m_cursor;
+	sf::Cursor m_cursor;
 	World m_world;
 	sf::View m_camera;
 	sf::Font m_font;

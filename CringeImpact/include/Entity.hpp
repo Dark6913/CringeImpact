@@ -30,6 +30,14 @@ protected:
 		ATTACK_BOTTOM,
 		ATTACK_LEFT
 	};
+
+	enum VisionDir : uint8_t
+	{
+		WATCH_RIGHT,
+		WATCH_DOWN,
+		WATCH_LEFT,
+		WATCH_TOP
+	};
 	
 public:
 	Entity();
@@ -45,6 +53,8 @@ public:
 	bool isDead();
 	virtual void update(float tick) override;
 protected:
+	VisionDir getVisionSector();
+
 	bool m_is_attack_sound_playing;
 	sf::Sound* m_attack_sound_ptr;
 	sf::Sound* m_death_sound_ptr;

@@ -7,11 +7,12 @@
 Client::Client()
 {
 	m_window.create(sf::VideoMode(1600, 800), "Cringe Impact");
-	m_window.setMouseCursorVisible(false);
 
-	m_cursor.loadFromFile("data/textures/cursor.png");
-	m_cursor.setCursorStyle(Cursor::ARROW);
 	m_world.loadFromFile("data/map/Map.tmx");
+	sf::Image cursor_image;
+	cursor_image.loadFromFile("data/textures/pointer.png");
+	m_cursor.loadFromPixels(cursor_image.getPixelsPtr(), cursor_image.getSize(), sf::Vector2u(0, 0));
+	m_window.setMouseCursor(m_cursor);
 
 	m_camera.setSize((sf::Vector2f)m_window.getSize());
 	m_camera.setCenter(m_world.getSpawnPoint());
@@ -83,28 +84,26 @@ void Client::run()
 						}
 					}
 				}
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
-				{
-					enemy1.attack();
-					if (VectorModule(enemy1.getPosition() - player.getPosition()) < 80.f) player.die();
-				}
 			}
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 					player.attack();
-					if (VectorModule(enemy1.getPosition() - player.getPosition()) < 80.f) enemy1.die();
+				}
+				else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+				{
+					enemy1.moveTo(this->getAbsoluteCursorPosition());
 				}
 			}
 		}
 
 		player.control(tick, this->getAbsoluteCursorPosition(), solid_objects);
+		enemy1.behave(tick);
 		m_camera.setCenter(RoundVector(player.getPosition()));
 
 		m_world.setCameraRect(this->getCameraRect());
 		m_world.update();
-		m_cursor.setPosition(this->getRelativeCursorPosition());
 
 		m_window.setView(m_camera);
 		m_window.clear();
@@ -134,7 +133,6 @@ void Client::drawInterface()
 	m_window.setView(m_window.getDefaultView());
 	// Draw iterface below
 	m_window.draw(m_fps);
-	m_window.draw(m_cursor);
 
 	m_window.setView(m_camera);
 }

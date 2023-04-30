@@ -165,7 +165,6 @@
     <ClCompile Include="src\Bush.cpp" />
     <ClCompile Include="src\Chest.cpp" />
     <ClCompile Include="src\Client.cpp" />
-    <ClCompile Include="src\Cursor.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -181,7 +180,6 @@
     <ClInclude Include="include\Bush.hpp" />
     <ClInclude Include="include\Chest.hpp" />
     <ClInclude Include="include\Client.hpp" />
-    <ClInclude Include="include\Cursor.hpp" />
     <ClInclude Include="include\Enemy.hpp" />
     <ClInclude Include="include\Entity.hpp" />
     <ClInclude Include="include\IAnimated.hpp" />
