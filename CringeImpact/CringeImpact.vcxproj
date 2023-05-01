@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)CringeImpact\include;$(SolutionDir)CringeImpact\libraries\SFML\include;$(SolutionDir)CringeImpact\libraries\tinytmx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CringeImpact\include;$(SolutionDir)CringeImpact\libraries\SFML\include;$(SolutionDir)CringeImpact\libraries\tinytmx\include;$(SolutionDir)CringeImpact\libraries\imgui;$(SolutionDir)CringeImpact\libraries\imgui-sfml</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
