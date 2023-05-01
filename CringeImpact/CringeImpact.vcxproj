@@ -123,7 +123,9 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)CringeImpact\include;$(SolutionDir)CringeImpact\libraries\SFML\include;$(SolutionDir)CringeImpact\libraries\tinytmx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CringeImpact\include;$(SolutionDir)CringeImpact\libraries\SFML\include;$(SolutionDir)CringeImpact\libraries\tinytmx\include;$(SolutionDir)CringeImpact\libraries\imgui;$(SolutionDir)CringeImpact\libraries\imgui-sfml</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,6 +137,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="libraries\imgui-sfml\imgui-SFML.cpp" />
+    <ClCompile Include="libraries\imgui\imgui.cpp" />
+    <ClCompile Include="libraries\imgui\imgui_demo.cpp" />
+    <ClCompile Include="libraries\imgui\imgui_draw.cpp" />
+    <ClCompile Include="libraries\imgui\imgui_tables.cpp" />
+    <ClCompile Include="libraries\imgui\imgui_widgets.cpp" />
     <ClCompile Include="libraries\tinytmx\src\base64.cpp" />
     <ClCompile Include="libraries\tinytmx\src\tinytmxColor.cpp" />
     <ClCompile Include="libraries\tinytmx\src\tinytmxDataChunkTile.cpp" />

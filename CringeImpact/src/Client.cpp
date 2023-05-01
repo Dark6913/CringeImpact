@@ -69,7 +69,7 @@ void Client::run()
 	cs.setOutlineColor(sf::Color::Red);
 	cs.setRadius(500.f);
 	cs.setOrigin(sf::Vector2f(500.f, 500.f));
-	cs.setPosition(enemy1.getPosition());
+	cs.setPosition(m_world.getSpawnPoint() + sf::Vector2f(400, 1000));
 	cs.setOutlineThickness(1);
 
 	enemy1.setLivingArea(cs.getPosition(), cs.getRadius());
