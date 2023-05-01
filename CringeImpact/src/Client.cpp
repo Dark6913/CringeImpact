@@ -49,21 +49,6 @@ void Client::run()
 	animated_objects.push_back((IAnimated*)&player);
 	solid_objects.push_back((Solid*)&player);
 
-	Enemy enemy1;
-	enemy1.setPosition(m_world.getSpawnPoint() + sf::Vector2f(800, 250));
-	animated_objects.push_back((IAnimated*)&enemy1);
-	solid_objects.push_back((Solid*)&enemy1);
-
-	Enemy enemy2;
-	enemy2.setPosition(m_world.getSpawnPoint() + sf::Vector2f(750, 300));
-	animated_objects.push_back((IAnimated*)&enemy2);
-	solid_objects.push_back((Solid*)&enemy2);
-
-	Enemy enemy3;
-	enemy3.setPosition(m_world.getSpawnPoint() + sf::Vector2f(850, 600));
-	animated_objects.push_back((IAnimated*)&enemy3);
-	solid_objects.push_back((Solid*)&enemy3);
-
 	sf::CircleShape cs;
 	cs.setFillColor(sf::Color::Transparent);
 	cs.setOutlineColor(sf::Color::Red);
@@ -71,6 +56,21 @@ void Client::run()
 	cs.setOrigin(sf::Vector2f(500.f, 500.f));
 	cs.setPosition(m_world.getSpawnPoint() + sf::Vector2f(400, 1000));
 	cs.setOutlineThickness(1);
+
+	Enemy enemy1;
+	enemy1.setPosition(cs.getPosition() + sf::Vector2f(300, 0));
+	animated_objects.push_back((IAnimated*)&enemy1);
+	solid_objects.push_back((Solid*)&enemy1);
+
+	Enemy enemy2;
+	enemy2.setPosition(cs.getPosition() + sf::Vector2f(100, 350));
+	animated_objects.push_back((IAnimated*)&enemy2);
+	solid_objects.push_back((Solid*)&enemy2);
+
+	Enemy enemy3;
+	enemy3.setPosition(cs.getPosition() + sf::Vector2f(-300, -400));
+	animated_objects.push_back((IAnimated*)&enemy3);
+	solid_objects.push_back((Solid*)&enemy3);
 
 	enemy1.setLivingArea(cs.getPosition(), cs.getRadius());
 	enemy2.setLivingArea(cs.getPosition(), cs.getRadius());
@@ -116,6 +116,7 @@ void Client::run()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 					player.attack();
+					enemy1.takeDamage(10);
 				}
 			}
 		}

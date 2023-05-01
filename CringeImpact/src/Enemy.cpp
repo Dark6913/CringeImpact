@@ -94,6 +94,7 @@ void Enemy::moveTo(sf::Vector2f point)
 
 void Enemy::behave(float tick, std::list<Solid*>& solid_list)
 {
+	if (m_is_dead) return;
 	if (m_walk_timer >= m_walk_cd)
 	{
 		srand(time(0) - rand());

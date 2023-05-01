@@ -50,6 +50,7 @@ public:
 	void move(sf::Vector2f delta);
 	void attack();
 	void die();
+	void takeDamage(float damage);
 	bool isDead();
 	virtual void update(float tick) override;
 protected:
@@ -75,4 +76,12 @@ protected:
 	bool m_is_attacking;
 	bool m_is_dead;
 	float m_vision_angle;
+	bool m_is_damaged_recently;
+
+	static bool m_is_damaged_shader_loaded;
+	static sf::Shader m_damaged_shader;
+	sf::Shader* m_current_shader_ptr;
+	float m_damaged_timer;
+
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

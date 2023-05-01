@@ -1,14 +1,17 @@
 #include "Entity.hpp"
 #include "VectorMath.hpp"
 
+sf::Shader Entity::m_damaged_shader;
+bool Entity::m_is_damaged_shader_loaded = false;
+
 Entity::Entity()
 {
-	m_max_hp = 0;
-	m_max_mp = 0;
-	m_max_stamina = 0;
-	m_current_hp = 0;
-	m_current_mp = 0;
-	m_current_stamina = 0;
+	m_max_hp = 100;
+	m_max_mp = 100;
+	m_max_stamina = 100;
+	m_current_hp = 100;
+	m_current_mp = 100;
+	m_current_stamina = 100;
 	m_speed = 0;
 	m_last_move_dir = MOVE_RIGHT;
 	m_is_attacking = false;
@@ -17,6 +20,15 @@ Entity::Entity()
 	m_is_dead = false;
 	m_attack_sound_ptr = NULL;
 	m_death_sound_ptr = NULL;
+	m_is_damaged_recently = false;
+	m_current_shader_ptr = NULL;
+	m_damaged_timer = 0.f;
+
+	if (!m_is_damaged_shader_loaded)
+	{
+		m_damaged_shader.loadFromFile("data/shaders/damaged.frag", sf::Shader::Fragment);
+		m_is_damaged_shader_loaded = true;
+	}
 }
 
 void Entity::move(sf::Vector2f delta)
@@ -68,6 +80,18 @@ void Entity::die()
 	}
 }
 
+void Entity::takeDamage(float damage)
+{
+	m_is_damaged_recently = true;
+	m_current_shader_ptr = &m_damaged_shader;
+	m_current_hp -= damage;
+	if (m_current_hp <= 0.f)
+	{
+		m_current_hp = 0.f;
+		this->die();
+	}
+}
+
 bool Entity::isDead()
 {
 	return m_is_dead;
@@ -75,6 +99,17 @@ bool Entity::isDead()
 
 void Entity::update(float tick)
 {
+	if (m_is_damaged_recently)
+	{
+		m_damaged_timer += tick;
+		if (m_damaged_timer >= 0.2f)
+		{
+			m_is_damaged_recently = false;
+			m_current_shader_ptr = NULL;
+			m_damaged_timer = 0.f;
+		}
+	}
+
 	if (m_animation_ptr)
 	{
 		if (!m_is_attacking && !m_is_dead) m_animation_ptr->playLoopInStraightOrder(tick);
@@ -108,4 +143,10 @@ Entity::VisionDir Entity::getVisionSector()
 	else if (m_vision_angle > M_PI_4 && m_vision_angle < M_3_PI_4) return WATCH_DOWN;
 	else if (m_vision_angle >= M_3_PI_4 && m_vision_angle <= M_5_PI_4) return WATCH_LEFT;
 	else return WATCH_TOP;
+}
+
+void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	if (m_animation_ptr && m_current_shader_ptr) target.draw(*m_animation_ptr, m_current_shader_ptr);
+	else if (m_animation_ptr) target.draw(*m_animation_ptr);
 }
