@@ -27,7 +27,6 @@ Player::Player()
 	m_die_anim.reset();
 
 	m_collisions.push_back(sf::IntRect(24, 120, 32, 8));
-	m_speed = 300.f;
 	this->setPosition(m_position);
 
 	if (!m_walk_buffer)
@@ -48,13 +47,21 @@ Player::Player()
 		m_attack_sound.setLoop(false);
 		m_attack_sound_ptr = &m_attack_sound;
 	}
-
-	m_instances_count++;
 	m_is_walk_sound_plays = false;
 	m_is_attacking = false;
+
+	m_speed = 300.f;
+	m_attack_range = 80.f;
+	m_attack_damage = 30.f;
+
+	// Hitboxes
+	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(20, 4), sf::Vector2f(40, 40), 2.f, this));
+	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(16, 44), sf::Vector2f(48, 84), 1.0f, this));
+
+	m_instances_count++;
 }
 
-void Player::control(float tick, sf::Vector2f mouse_pos, std::list<Solid*> solid_list)
+void Player::control(float tick, std::list<Solid*> solid_list)
 {
 	bool is_key_pressed = false;
 	float factor = m_speed * tick;
@@ -118,8 +125,6 @@ void Player::control(float tick, sf::Vector2f mouse_pos, std::list<Solid*> solid
 
 		if (!m_is_attacking) m_animation_ptr->setCurrentRow(m_last_move_dir + 3);
 	}
-
-	m_vision_angle = VectorArgument(mouse_pos - m_position);
 }
 
 Player::~Player()

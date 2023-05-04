@@ -23,6 +23,8 @@ Entity::Entity()
 	m_is_damaged_recently = false;
 	m_current_shader_ptr = NULL;
 	m_damaged_timer = 0.f;
+	m_attack_range = 0.f;
+	m_attack_damage = 0.f;
 
 	if (!m_is_damaged_shader_loaded)
 	{
@@ -31,13 +33,24 @@ Entity::Entity()
 	}
 }
 
+Hitbox* Entity::getAttackedHitbox(sf::Vector2f attack_point)
+{
+	for (auto it = m_hitboxes_list.begin(); it != m_hitboxes_list.end(); it++)
+	{
+		if (it->isContain(attack_point)) return &*it;
+	}
+	return NULL;
+}
+
 void Entity::move(sf::Vector2f delta)
 {
 	this->setPosition(m_position + delta);
 }
 
-void Entity::attack()
+void Entity::attack(sf::Vector2f attack_point, std::list<Entity*>& entitys_list)
 {
+	m_vision_angle = VectorArgument(attack_point - m_position);
+
 	if (!m_is_attacking && !m_is_dead)
 	{
 		this->setCurrentAnimation(&m_attack_anim);
@@ -63,6 +76,20 @@ void Entity::attack()
 
 		if (m_vision_angle >= M_3_PI_2 || m_vision_angle <= M_PI_2) m_last_move_dir = MOVE_RIGHT;
 		else m_last_move_dir = MOVE_LEFT;
+
+		float attack_distance = VectorModule(attack_point - m_position);
+		attack_distance = (attack_distance > m_attack_range) ? m_attack_range : attack_distance;
+		sf::Vector2f actually_attack_point = m_position + attack_distance * sf::Vector2f(cos(m_vision_angle), sin(m_vision_angle));
+
+		for (auto it = entitys_list.begin(); it != entitys_list.end(); it++)
+		{
+			Entity& enemy = **it;
+			Hitbox* attacked_hitbox = enemy.getAttackedHitbox(actually_attack_point);
+			if (attacked_hitbox)
+			{
+				enemy.takeDamage(m_attack_damage * attacked_hitbox->getDamageMultiply());
+			}
+		}
 
 		m_is_attacking = true;
 	}
@@ -152,4 +179,15 @@ void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	if (m_animation_ptr && m_current_shader_ptr) target.draw(*m_animation_ptr, m_current_shader_ptr);
 	else if (m_animation_ptr) target.draw(*m_animation_ptr);
+
+	sf::RectangleShape rc;
+	rc.setFillColor(sf::Color::Transparent);
+	rc.setOutlineThickness(-1);
+	for (auto it = m_hitboxes_list.begin(); it != m_hitboxes_list.end(); it++)
+	{
+		rc.setOutlineColor((it->getDamageMultiply() > 1.f) ?  sf::Color::Red : sf::Color::White);
+		rc.setPosition(sf::Vector2f(this->getVisibleBounds().left, this->getVisibleBounds().top) + it->getOffset());
+		rc.setSize(it->getSize());
+		target.draw(rc);
+	}
 }

@@ -6,7 +6,7 @@ class Player : public Entity
 {
 public:
 	Player();
-	void control(float tick, sf::Vector2f mouse_pos, std::list<Solid*> solid_list);
+	void control(float tick, std::list<Solid*> solid_list);
 	~Player();
 private:
 	static sf::SoundBuffer* m_walk_buffer;

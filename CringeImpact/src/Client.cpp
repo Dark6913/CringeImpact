@@ -4,9 +4,11 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 
+#define CRINGE_IMPACT_VERSION	"0.1a"
+
 Client::Client()
 {
-	m_window.create(sf::VideoMode(1600, 800), "Cringe Impact");
+	m_window.create(sf::VideoMode(1600, 800), std::string("Cringe Impact v") + CRINGE_IMPACT_VERSION);
 
 	m_world.loadFromFile("data/map/Map.tmx");
 	sf::Image cursor_image;
@@ -30,7 +32,7 @@ void Client::run()
 	std::list<MapObject*>& loot = m_world.getLootList();
 	std::list<Solid*> solid_objects;
 	std::list<IAnimated*> animated_objects;
-	std::list<Enemy*> enemy_list;
+	std::list<Entity*> enemy_list;
 	solid_objects.push_back((Solid*)&m_world);
 	for (auto it = nature.begin(); it != nature.end(); it++)
 	{
@@ -42,7 +44,7 @@ void Client::run()
 		solid_objects.push_back((Solid*)*it);
 		animated_objects.push_back((IAnimated*)*it);
 	}
-
+	
 	// THE BUG
 	// sf::Vector2f(3357.49878, 9413.87305)
 	Player player;
@@ -104,17 +106,17 @@ void Client::run()
 			{
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
-					
+					player.attack(this->getAbsoluteCursorPosition(), enemy_list);
 				}
 			}
 		}
 
-		player.control(tick, this->getAbsoluteCursorPosition(), solid_objects);
+		player.control(tick, solid_objects);
 		m_camera.setCenter(RoundVector(player.getPosition()));
 		for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
 		{
 			(*it)->setListenerPosition(player.getPosition());
-			(*it)->behave(tick, solid_objects);
+			((Enemy*)(*it))->behave(tick, solid_objects);
 		}
 
 		m_world.setCameraRect(this->getCameraRect());

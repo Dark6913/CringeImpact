@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "MapObject.hpp"
-#include "Solid.hpp"
+#include "Hitbox.hpp"
 
 class Entity : public MapObject
 {
@@ -59,15 +59,20 @@ public:
 	float getStamina() { return m_current_stamina; };
 	float getVisionAngle() { return m_vision_angle; };
 
+	// Return Hitbox pointer if one of the hitboxes contains attack_point
+	// Else return NULL 
+	Hitbox* getAttackedHitbox(sf::Vector2f attack_point);
 
 	void move(sf::Vector2f delta);
-	void attack();
+	void attack(sf::Vector2f attack_point, std::list<Entity*>& entitys_list);
 	void die();
 	void takeDamage(float damage);
 	bool isDead();
 	virtual void update(float tick) override;
 protected:
 	VisionDir getVisionSector();
+
+	std::list<Hitbox> m_hitboxes_list;
 
 	bool m_is_attack_sound_playing;
 	sf::Sound* m_attack_sound_ptr;
@@ -86,6 +91,9 @@ protected:
 	Movement m_last_move_dir;
 
 	float m_speed;
+	float m_attack_range;
+	float m_attack_damage;
+
 	bool m_is_attacking;
 	bool m_is_dead;
 	float m_vision_angle;

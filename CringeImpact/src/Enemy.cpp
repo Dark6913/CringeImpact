@@ -10,13 +10,15 @@ Enemy::Enemy()
 {
 	m_move_distance = 0;
 	is_have_to_move = false;
-	m_speed = 300.f;
 	m_is_walk_sound_play = false;
 	m_walk_timer = 0.f;
 	m_walk_cd = 3.f;
 	m_living_area_center = {0, 0};
 	m_living_area_radius = 1.f;
 	m_vision_angle = 0.f;
+	m_speed = 300.f;
+	m_attack_range = 50.f;
+	m_attack_damage = 10.f;
 
 	// Move animation
 	m_move_anim.loadFromFile("data/textures/coal/Tleiushiy_tileset(walk).png", 4, 6, 0.2f);
@@ -61,6 +63,10 @@ Enemy::Enemy()
 	m_walk_sound.setBuffer(*m_walk_buffer);
 	m_walk_sound.setVolume(20);
 	m_walk_sound.setLoop(true);
+
+	// Hitboxes
+	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(44, 8), sf::Vector2f(32, 32), 2.f, this));
+	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(36, 40), sf::Vector2f(52, 88), 1.0f, this));
 
 	m_instances_count++;
 }
