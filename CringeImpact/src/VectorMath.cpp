@@ -25,3 +25,8 @@ sf::Vector2f RandomVector(sf::Vector2f center, float radius)
 	float distance = (float)((rand() + rand()) % (int)radius);
 	return center + sf::Vector2f(distance * cos(angle), distance * sin(angle));
 }
+
+sf::Vector2f operator*(sf::Vector2f a, sf::Vector2f b)
+{
+	return sf::Vector2f(a.x * b.x, a.y * b.y);
+}

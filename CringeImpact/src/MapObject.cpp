@@ -2,11 +2,6 @@
 #include "MapObject.hpp"
 #include "VectorMath.hpp"
 
-sf::Vector2f operator*(sf::Vector2f a, sf::Vector2f b)
-{
-	return sf::Vector2f(a.x * b.x, a.y * b.y);
-}
-
 MapObject::MapObject()
 {
 	this->setPosition(m_position);
@@ -90,6 +85,12 @@ void MapObject::update(float tick)
 	{
 		m_animation_ptr->playLoopInStraightOrder(tick);
 	}
+}
+
+void MapObject::setCurrentAnimation(Animation* anim)
+{
+	m_animation_ptr = anim;
+	if (anim) this->setObjectTextureOriginOffset(anim->getOriginOffset() * anim->getScale());
 }
 
 void MapObject::draw(sf::RenderTarget& target, sf::RenderStates states) const

@@ -40,7 +40,7 @@ void Entity::attack()
 {
 	if (!m_is_attacking && !m_is_dead)
 	{
-		m_animation_ptr = &m_attack_anim;
+		this->setCurrentAnimation(&m_attack_anim);
 		m_animation_ptr->reset();
 		m_animation_ptr->setPosition(m_position);
 		
@@ -72,7 +72,7 @@ void Entity::die()
 {
 	if (!m_is_dead)
 	{
-		m_animation_ptr = &m_die_anim;
+		this->setCurrentAnimation(&m_die_anim);
 		m_animation_ptr->setCurrentRow(m_last_move_dir - 1);
 		m_animation_ptr->setPosition(m_position);
 		m_is_dead = true;
@@ -127,7 +127,7 @@ void Entity::update(float tick)
 			if (m_animation_ptr->playInStraightOrder(tick))
 			{
 				m_is_attacking = false;
-				m_animation_ptr = &m_move_anim;
+				this->setCurrentAnimation(&m_move_anim);
 				m_animation_ptr->reset();
 				m_animation_ptr->setPosition(m_position);
 				m_is_attack_sound_playing = false;

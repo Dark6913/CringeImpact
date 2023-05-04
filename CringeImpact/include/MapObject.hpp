@@ -21,6 +21,10 @@ public:
 	sf::Vector2f getCenter() const override;
 	virtual void update(float tick) override;
 protected:
+	// Set the current animation and texture origin offset for collsion boxes
+	// This function have to be used always when you want to change current animation
+	void setCurrentAnimation(Animation* anim);
+
 	sf::Vector2f m_position;
 	Animation* m_animation_ptr;
 	sf::Vector2f m_listener_position;

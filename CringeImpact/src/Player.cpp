@@ -7,12 +7,12 @@ uint32_t Player::m_instances_count = 0;
 Player::Player()
 {
 	// Move animation
-	m_animation_ptr = &m_move_anim;
 	m_move_anim.loadFromFile("data/textures/Hina/Hina-Move.png", 4, 6, 0.2f);
 	m_move_anim.setScale(sf::Vector2f(4.f, 4.f));
 	m_move_anim.setOrigin(sf::Vector2f(.5f, .5f));
 	m_move_anim.reset();
 	m_move_anim.setCurrentRow(STAY_RIGHT);
+	this->setCurrentAnimation(&m_move_anim);
 
 	// Attack animation
 	m_attack_anim.loadFromFile("data/textures/Hina/Hina-Attack.png", 4, 4, 0.2f);
@@ -26,7 +26,6 @@ Player::Player()
 	m_die_anim.setOrigin(sf::Vector2f(.5f, .5f));
 	m_die_anim.reset();
 
-	this->setObjectTextureOriginOffset(m_animation_ptr->getOriginOffset() * 4.f);
 	m_collisions.push_back(sf::IntRect(24, 120, 32, 8));
 	m_speed = 300.f;
 	this->setPosition(m_position);

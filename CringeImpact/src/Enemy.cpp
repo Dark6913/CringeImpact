@@ -16,16 +16,17 @@ Enemy::Enemy()
 	m_walk_cd = 3.f;
 	m_living_area_center = {0, 0};
 	m_living_area_radius = 1.f;
+	m_vision_angle = 0.f;
 
 	// Move animation
-	m_animation_ptr = &m_move_anim;
 	m_move_anim.loadFromFile("data/textures/coal/Tleiushiy_tileset(walk).png", 4, 6, 0.2f);
 	m_move_anim.setScale(sf::Vector2f(4, 4));
 	m_move_anim.setOrigin(sf::Vector2f(.5f, .5f));
 	m_move_anim.reset();
 	m_move_anim.setCurrentRow(STAY_LEFT);
 	m_last_move_dir = MOVE_LEFT;
-	m_vision_angle = 3.14;
+	this->setCurrentAnimation(&m_move_anim);
+
 
 	// Attack animation
 	m_attack_anim.loadFromFile("data/textures/coal/Tleiushiy_tileset(attack).png", 4, 4, 0.2f);
@@ -39,7 +40,6 @@ Enemy::Enemy()
 	m_die_anim.setOrigin(sf::Vector2f(.5f, .5f));
 	m_die_anim.reset();
 
-	this->setObjectTextureOriginOffset(m_animation_ptr->getOriginOffset() * 4.f);
 	m_collisions.push_back(sf::IntRect(48, 120, 28, 8));
 	this->setPosition(m_position);
 

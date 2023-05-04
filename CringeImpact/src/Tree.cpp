@@ -3,5 +3,5 @@
 
 Tree::Tree()
 {
-	m_animation_ptr = &m_animation;
+	this->setCurrentAnimation(&m_animation);
 }

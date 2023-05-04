@@ -19,3 +19,5 @@ sf::Vector2f RoundVector(sf::Vector2f vector);
 
 // Returns vector with random coordinates within circle described by input params
 sf::Vector2f RandomVector(sf::Vector2f center, float radius);
+
+sf::Vector2f operator*(sf::Vector2f a, sf::Vector2f b);
