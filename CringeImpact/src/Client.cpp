@@ -108,10 +108,9 @@ void Client::run()
 					for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
 					{
 						Enemy& enemy = **it;
-						if (VectorModule(player.getCenter() - enemy.getCenter()) <= 70.f)
-						{
-							enemy.takeDamage(30.f);
-						}
+						float point_distance = VectorModule(player.getCenter() - this->getAbsoluteCursorPosition());
+						point_distance = (point_distance > 60.f) ? 60.f : point_distance;
+
 					}
 				}
 			}

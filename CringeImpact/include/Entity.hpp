@@ -41,12 +41,24 @@ protected:
 	
 public:
 	Entity();
-	void setMaxHP(uint32_t value) { m_max_hp = value; };
-	void setHP(uint32_t value) { m_current_hp = value; };
-	void setMaxMP(uint32_t value) { m_max_mp = value; };
-	void setMP(uint32_t value) { m_current_mp = value; };
-	void setMaxStamina(uint32_t value) { m_max_stamina = value; };
-	void setStamina(uint32_t value) { m_current_stamina = value; };
+
+	// Setters
+	void setMaxHP(float value) { m_max_hp = value; };
+	void setHP(float value) { m_current_hp = value; };
+	void setMaxMP(float value) { m_max_mp = value; };
+	void setMP(float value) { m_current_mp = value; };
+	void setMaxStamina(float value) { m_max_stamina = value; };
+	void setStamina(float value) { m_current_stamina = value; };
+
+	// Getters
+	float getMaxHP() { return m_max_hp; };
+	float getHP() { return m_current_hp; };
+	float getMaxMP() { return m_max_mp; };
+	float getMP() { return m_current_mp; };
+	float getMaxStamina() { return m_max_stamina; };
+	float getStamina() { return m_current_stamina; };
+
+
 	void move(sf::Vector2f delta);
 	void attack();
 	void die();
@@ -60,12 +72,12 @@ protected:
 	sf::Sound* m_attack_sound_ptr;
 	sf::Sound* m_death_sound_ptr;
 
-	uint32_t m_max_hp;
-	uint32_t m_current_hp;
-	uint32_t m_max_mp;
-	uint32_t m_current_mp;
-	uint32_t m_max_stamina;
-	uint32_t m_current_stamina;
+	float m_max_hp;
+	float m_current_hp;
+	float m_max_mp;
+	float m_current_mp;
+	float m_max_stamina;
+	float m_current_stamina;
 
 	Animation m_move_anim;
 	Animation m_die_anim;
