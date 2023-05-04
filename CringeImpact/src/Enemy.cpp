@@ -16,6 +16,7 @@ Enemy::Enemy()
 	m_walk_cd = 3.f;
 	m_living_area_center = {0, 0};
 	m_living_area_radius = 1.f;
+	m_target = NULL;
 
 	// Move animation
 	m_animation_ptr = &m_move_anim;
@@ -94,13 +95,18 @@ void Enemy::moveTo(sf::Vector2f point)
 
 void Enemy::behave(float tick, std::list<Solid*>& solid_list)
 {
-	if (m_is_dead) return;
+	if (m_is_dead)
+	{
+		if (m_is_walk_sound_play)
+		{
+			m_is_walk_sound_play = false;
+			m_walk_sound.stop();
+		}
+		return;
+	}
 	if (m_walk_timer >= m_walk_cd)
 	{
-		srand(time(0) - rand());
-		float angle = (float)((rand() + rand()) % 361) / 180.f * M_PI;
-		float distance = (float)((rand() + rand()) % (int)m_living_area_radius);
-		this->moveTo(sf::Vector2f(m_living_area_center.x + distance * cos(angle), m_living_area_center.y + distance * sin(angle)));
+		this->moveTo(RandomVector(m_living_area_center, m_living_area_radius));
 		m_walk_timer = 0.f;
 	}
 	else if (!is_have_to_move) m_walk_timer += tick;
@@ -108,12 +114,12 @@ void Enemy::behave(float tick, std::list<Solid*>& solid_list)
 	if (is_have_to_move)
 	{
 		sf::Vector2f delta_move = sf::Vector2f(m_speed * cos(m_vision_angle) * tick, m_speed * sin(m_vision_angle) * tick);
-		
 		for (auto it = solid_list.begin(); it != solid_list.end(); it++)
 		{
 			if (*it == this) continue;
 			if (delta_move.x && this->isMovedIntersects(*it, sf::Vector2f(delta_move.x, 0.f))) delta_move.x = 0.f;
 			if (delta_move.y && this->isMovedIntersects(*it, sf::Vector2f(0.f, delta_move.y))) delta_move.y = 0.f;
+			if (delta_move.x && delta_move.y && this->isMovedIntersects(*it, delta_move)) delta_move = {0.f, 0.f};
 			if (!delta_move.x && !delta_move.y)
 			{
 				m_move_distance = 0;

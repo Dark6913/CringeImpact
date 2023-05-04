@@ -103,6 +103,7 @@ void Player::control(float tick, sf::Vector2f mouse_pos, std::list<Solid*> solid
 			if (*it == this) continue;
 			if (delta_move.x && this->isMovedIntersects(*it, sf::Vector2f(delta_move.x, 0))) delta_move.x = 0;
 			if (delta_move.y && this->isMovedIntersects(*it, sf::Vector2f(0, delta_move.y))) delta_move.y = 0;
+			if (delta_move.x && delta_move.y && this->isMovedIntersects(*it, delta_move)) delta_move = { 0.f, 0.f };
 			if (!delta_move.x && !delta_move.y) break;
 
 		}

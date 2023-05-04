@@ -1,4 +1,5 @@
 #include "VectorMath.hpp"
+#include <random>
 
 float VectorModule(sf::Vector2f vector)
 {
@@ -15,4 +16,12 @@ float VectorArgument(sf::Vector2f vector)
 sf::Vector2f RoundVector(sf::Vector2f vector)
 {
 	return sf::Vector2f(round(vector.x), round(vector.y));
+}
+
+sf::Vector2f RandomVector(sf::Vector2f center, float radius)
+{
+	srand(time(0) - rand());
+	float angle = (float)((rand() + rand()) % 360) / 180.f * M_PI;
+	float distance = (float)((rand() + rand()) % (int)radius);
+	return center + sf::Vector2f(distance * cos(angle), distance * sin(angle));
 }

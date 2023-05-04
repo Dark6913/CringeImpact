@@ -163,7 +163,7 @@ void Animation::reset()
 	m_cur_frame = 0;
 }
 
-void Animation::relese()
+void Animation::release()
 {
 	for (auto it = m_textures.begin(); it != m_textures.end(); it++)
 		delete it->second;

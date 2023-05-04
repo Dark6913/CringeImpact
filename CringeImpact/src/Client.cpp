@@ -30,6 +30,7 @@ void Client::run()
 	std::list<MapObject*>& loot = m_world.getLootList();
 	std::list<Solid*> solid_objects;
 	std::list<IAnimated*> animated_objects;
+	std::list<Enemy*> enemy_list;
 	solid_objects.push_back((Solid*)&m_world);
 	for (auto it = nature.begin(); it != nature.end(); it++)
 	{
@@ -57,33 +58,21 @@ void Client::run()
 	cs.setPosition(m_world.getSpawnPoint() + sf::Vector2f(400, 1000));
 	cs.setOutlineThickness(1);
 
-	Enemy enemy1;
-	enemy1.setPosition(cs.getPosition() + sf::Vector2f(300, 0));
-	animated_objects.push_back((IAnimated*)&enemy1);
-	solid_objects.push_back((Solid*)&enemy1);
-
-	Enemy enemy2;
-	enemy2.setPosition(cs.getPosition() + sf::Vector2f(100, 350));
-	animated_objects.push_back((IAnimated*)&enemy2);
-	solid_objects.push_back((Solid*)&enemy2);
-
-	Enemy enemy3;
-	enemy3.setPosition(cs.getPosition() + sf::Vector2f(-300, -400));
-	animated_objects.push_back((IAnimated*)&enemy3);
-	solid_objects.push_back((Solid*)&enemy3);
-
-	enemy1.setLivingArea(cs.getPosition(), cs.getRadius());
-	enemy2.setLivingArea(cs.getPosition(), cs.getRadius());
-	enemy3.setLivingArea(cs.getPosition(), cs.getRadius());
+	for (int i = 0; i < 3; i++)
+	{
+		Enemy* enemy = new Enemy();
+		enemy->setPosition(RandomVector(cs.getPosition(), cs.getRadius()));
+		enemy->setLivingArea(cs.getPosition(), cs.getRadius());
+		enemy_list.push_back(enemy);
+		animated_objects.push_back((IAnimated*)enemy);
+		solid_objects.push_back((Solid*)enemy);
+	}
 
 	//sf::Music music;
 	//music.openFromFile("data/sound/relax_2.ogg");
 	//music.setLoop(true);
 	//music.setVolume(20);
 	//music.play();
-
-	sf::Shader shader;
-	shader.loadFromFile("data/shaders/damaged.frag", sf::Shader::Fragment);
 
 	sf::Clock clock;
 	while (m_window.isOpen())
@@ -103,7 +92,7 @@ void Client::run()
 					for (auto it = loot.begin(); it != loot.end(); it++)
 					{
 						Chest* chest = (Chest*)*it;
-						if (VectorModule(chest->getCenter() - player.getPosition()) <= 80.f)
+						if (VectorModule(chest->getCenter() - player.getPosition()) <= 50.f)
 						{
 							chest->toggle();
 							break;
@@ -116,16 +105,25 @@ void Client::run()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 					player.attack();
-					enemy1.takeDamage(10);
+					for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
+					{
+						Enemy& enemy = **it;
+						if (VectorModule(player.getCenter() - enemy.getCenter()) <= 70.f)
+						{
+							enemy.takeDamage(30.f);
+						}
+					}
 				}
 			}
 		}
 
 		player.control(tick, this->getAbsoluteCursorPosition(), solid_objects);
-		enemy1.behave(tick, solid_objects);
-		enemy2.behave(tick, solid_objects);
-		enemy3.behave(tick, solid_objects);
 		m_camera.setCenter(RoundVector(player.getPosition()));
+		for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
+		{
+			(*it)->setListenerPosition(player.getPosition());
+			(*it)->behave(tick, solid_objects);
+		}
 
 		m_world.setCameraRect(this->getCameraRect());
 		m_world.update();
@@ -137,9 +135,6 @@ void Client::run()
 
 		for (auto it = loot.begin(); it != loot.end(); it++)
 			(*it)->setListenerPosition(player.getPosition());
-		enemy1.setListenerPosition(player.getPosition());
-		enemy2.setListenerPosition(player.getPosition());
-		enemy3.setListenerPosition(player.getPosition());
 
 		animated_objects.sort([](IAnimated* a, IAnimated* b) {
 			return a->getVisibleBounds().top + a->getVisibleBounds().height < b->getVisibleBounds().top + b->getVisibleBounds().height;
@@ -154,7 +149,9 @@ void Client::run()
 		m_window.display();
 	}
 	m_world.release();
-	Animation::relese();
+	Animation::release();
+	for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
+		delete* it;
 }
 
 void Client::drawInterface()

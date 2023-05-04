@@ -19,8 +19,8 @@ protected:
 
 	enum Death : uint8_t
 	{
-		DIE_RIGHT = 1U,
-		DIE_LEFT = 2U
+		DIE_RIGHT,
+		DIE_LEFT
 	};
 
 	enum Fight : uint8_t
@@ -82,6 +82,8 @@ protected:
 	static sf::Shader m_damaged_shader;
 	sf::Shader* m_current_shader_ptr;
 	float m_damaged_timer;
+
+	Entity* m_target;
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

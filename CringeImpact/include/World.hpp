@@ -14,7 +14,7 @@ public:
 	std::list<MapObject*>& getNatureList();
 	std::list<MapObject*>& getLootList();
 
-	sf::Vector2f getSpawnPoint() 
+	sf::Vector2f getSpawnPoint()
 	{
 		const tinytmx::Object* obj = ((tinytmx::ObjectGroup*)m_layers.at("test"))->GetObject(0);
 		return sf::Vector2f(obj->GetX() * m_map_scale.x, obj->GetY() * m_map_scale.y);

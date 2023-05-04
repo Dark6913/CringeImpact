@@ -82,13 +82,16 @@ void Entity::die()
 
 void Entity::takeDamage(float damage)
 {
-	m_is_damaged_recently = true;
-	m_current_shader_ptr = &m_damaged_shader;
-	m_current_hp -= damage;
-	if (m_current_hp <= 0.f)
+	if (!m_is_dead)
 	{
-		m_current_hp = 0.f;
-		this->die();
+		m_is_damaged_recently = true;
+		m_current_shader_ptr = &m_damaged_shader;
+		m_current_hp -= damage;
+		if (m_current_hp <= 0.f)
+		{
+			m_current_hp = 0.f;
+			this->die();
+		}
 	}
 }
 
