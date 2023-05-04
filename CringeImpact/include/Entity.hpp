@@ -57,6 +57,7 @@ public:
 	float getMP() { return m_current_mp; };
 	float getMaxStamina() { return m_max_stamina; };
 	float getStamina() { return m_current_stamina; };
+	float getVisionAngle() { return m_vision_angle; };
 
 
 	void move(sf::Vector2f delta);
@@ -94,8 +95,6 @@ protected:
 	static sf::Shader m_damaged_shader;
 	sf::Shader* m_current_shader_ptr;
 	float m_damaged_timer;
-
-	Entity* m_target;
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

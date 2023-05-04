@@ -104,14 +104,7 @@ void Client::run()
 			{
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
-					player.attack();
-					for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
-					{
-						Enemy& enemy = **it;
-						float point_distance = VectorModule(player.getCenter() - this->getAbsoluteCursorPosition());
-						point_distance = (point_distance > 60.f) ? 60.f : point_distance;
-
-					}
+					
 				}
 			}
 		}
@@ -130,7 +123,7 @@ void Client::run()
 		m_window.setView(m_camera);
 		m_window.clear();
 		m_window.draw(m_world);
-		m_window.draw(cs);
+		// m_window.draw(cs);
 
 		for (auto it = loot.begin(); it != loot.end(); it++)
 			(*it)->setListenerPosition(player.getPosition());

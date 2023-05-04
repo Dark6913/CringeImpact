@@ -16,7 +16,6 @@ Enemy::Enemy()
 	m_walk_cd = 3.f;
 	m_living_area_center = {0, 0};
 	m_living_area_radius = 1.f;
-	m_target = NULL;
 
 	// Move animation
 	m_animation_ptr = &m_move_anim;

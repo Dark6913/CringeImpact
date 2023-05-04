@@ -175,6 +175,7 @@
     <ClCompile Include="src\Client.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\Hitbox.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MapObject.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="include\Client.hpp" />
     <ClInclude Include="include\Enemy.hpp" />
     <ClInclude Include="include\Entity.hpp" />
+    <ClInclude Include="include\Hitbox.hpp" />
     <ClInclude Include="include\IAnimated.hpp" />
     <ClInclude Include="include\MapObject.hpp" />
     <ClInclude Include="include\Player.hpp" />

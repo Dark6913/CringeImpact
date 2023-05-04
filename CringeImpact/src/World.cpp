@@ -119,7 +119,7 @@ void World::loadNature()
 			{
 				map_object->loadAnimation(
 					m_tilesets[object->GetTile()->tilesetId],
-					tile->GetFrameCount(),
+					tile->GetFrameCount(), 1,
 					tile->GetFrames()[0].GetDuration() / 1000.f,
 					(sf::Vector2f)m_map_scale,
 					sf::Vector2f(0.f, 1.f)
@@ -166,7 +166,7 @@ void World::loadLoot()
 			{
 				map_object->loadAnimation(
 					m_tilesets[object->GetTile()->tilesetId],
-					tile->GetFrameCount(),
+					tile->GetFrameCount(), 1,
 					tile->GetFrames()[0].GetDuration() / 2000.f,
 					(sf::Vector2f)m_map_scale,
 					sf::Vector2f(0.f, 1.f)

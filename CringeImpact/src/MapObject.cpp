@@ -25,12 +25,12 @@ void MapObject::setListenerPosition(sf::Vector2f listener_pos)
 	m_listener_position = listener_pos;
 }
 
-
-void MapObject::loadAnimation(sf::Texture& texture, uint8_t frames_count, float frame_duration, sf::Vector2f scale, sf::Vector2f origin)
+void MapObject::loadAnimation(sf::Texture& texture, uint8_t frames_count, uint8_t rows_count,
+	float frame_duration, sf::Vector2f scale, sf::Vector2f origin)
 {
 	if (m_animation_ptr)
 	{
-		m_animation_ptr->loadFromMemory(texture, frames_count, 1, frame_duration);
+		m_animation_ptr->loadFromMemory(texture, frames_count, rows_count, frame_duration);
 		m_animation_ptr->setScale(scale);
 		m_animation_ptr->setOrigin(origin);
 		this->setObjectTextureOriginOffset(
@@ -42,11 +42,12 @@ void MapObject::loadAnimation(sf::Texture& texture, uint8_t frames_count, float 
 	}
 }
 
-void MapObject::loadAnimation(std::string file, uint8_t frames_count, float frame_duration, sf::Vector2f scale, sf::Vector2f origin)
+void MapObject::loadAnimation(std::string file, uint8_t frames_count, uint8_t rows_count,
+	float frame_duration, sf::Vector2f scale, sf::Vector2f origin)
 {
 	if (m_animation_ptr)
 	{
-		m_animation_ptr->loadFromFile(file, frames_count, 1, frame_duration);
+		m_animation_ptr->loadFromFile(file, frames_count, rows_count, frame_duration);
 		m_animation_ptr->setScale(scale);
 		m_animation_ptr->setOrigin(origin);
 		this->setObjectTextureOriginOffset(
