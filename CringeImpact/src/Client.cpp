@@ -4,7 +4,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 
-#define CRINGE_IMPACT_VERSION	"0.1a"
+#define CRINGE_IMPACT_VERSION	"0.2a"
 
 Client::Client()
 {
@@ -33,6 +33,7 @@ void Client::run()
 	std::list<Solid*> solid_objects;
 	std::list<IAnimated*> animated_objects;
 	std::list<Entity*> enemy_list;
+	std::list<Entity*> players_list;
 	solid_objects.push_back((Solid*)&m_world);
 	for (auto it = nature.begin(); it != nature.end(); it++)
 	{
@@ -51,6 +52,7 @@ void Client::run()
 	player.setPosition(m_world.getSpawnPoint());
 	animated_objects.push_back((IAnimated*)&player);
 	solid_objects.push_back((Solid*)&player);
+	players_list.push_back((Entity*)&player);
 
 	sf::CircleShape cs;
 	cs.setFillColor(sf::Color::Transparent);
@@ -113,11 +115,6 @@ void Client::run()
 
 		player.control(tick, solid_objects);
 		m_camera.setCenter(RoundVector(player.getPosition()));
-		for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
-		{
-			(*it)->setListenerPosition(player.getPosition());
-			((Enemy*)(*it))->behave(tick, solid_objects);
-		}
 
 		m_world.setCameraRect(this->getCameraRect());
 		m_world.update();
@@ -125,10 +122,16 @@ void Client::run()
 		m_window.setView(m_camera);
 		m_window.clear();
 		m_window.draw(m_world);
-		// m_window.draw(cs);
 
 		for (auto it = loot.begin(); it != loot.end(); it++)
 			(*it)->setListenerPosition(player.getPosition());
+
+		for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
+		{
+			Enemy* cur_it = (Enemy*)*it;
+			cur_it->setListenerPosition(player.getPosition());
+			cur_it->behave(tick, players_list, solid_objects);
+		}
 
 		animated_objects.sort([](IAnimated* a, IAnimated* b) {
 			return a->getVisibleBounds().top + a->getVisibleBounds().height < b->getVisibleBounds().top + b->getVisibleBounds().height;

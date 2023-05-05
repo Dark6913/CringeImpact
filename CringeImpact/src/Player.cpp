@@ -37,6 +37,7 @@ Player::Player()
 		m_walk_sound.setVolume(20);
 		m_walk_sound.setLoop(true);
 	}
+	m_walk_sound_ptr = &m_walk_sound;
 
 	if (!m_attack_buffer)
 	{
@@ -45,14 +46,15 @@ Player::Player()
 		m_attack_sound.setBuffer(*m_attack_buffer);
 		m_attack_sound.setVolume(20);
 		m_attack_sound.setLoop(false);
-		m_attack_sound_ptr = &m_attack_sound;
 	}
+	m_attack_sound_ptr = &m_attack_sound;
+
 	m_is_walk_sound_plays = false;
 	m_is_attacking = false;
 
 	m_speed = 300.f;
 	m_attack_range = 80.f;
-	m_attack_damage = 30.f;
+	m_attack_damage = 25.f;
 
 	// Hitboxes
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(20, 4), sf::Vector2f(40, 40), 2.f, this));

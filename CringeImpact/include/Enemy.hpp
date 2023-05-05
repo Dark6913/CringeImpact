@@ -6,10 +6,14 @@ class Enemy : public Entity
 public:
 	Enemy();
 	void moveTo(sf::Vector2f point);
-	void behave(float tick, std::list<Solid*>& solid_list);
+	void behave(float tick, std::list<Entity*> players_list, std::list<Solid*>& solid_list);
 	void setLivingArea(sf::Vector2f point, float radius);
+	void setTarget(Entity* target);
 	~Enemy();
 private:
+	// Stop an enemy
+	void stopMoving();
+
 	static sf::SoundBuffer* m_death_buffer;
 	static sf::SoundBuffer* m_walk_buffer;
 	static uint32_t m_instances_count;
@@ -23,4 +27,12 @@ private:
 	float m_walk_cd;
 	sf::Vector2f m_living_area_center;
 	float m_living_area_radius;
+
+	float m_agressive_range;
+	float m_escape_distance;
+	float m_calm_range;
+	float m_living_area_extra_range;
+
+
+	Entity* m_target;
 };

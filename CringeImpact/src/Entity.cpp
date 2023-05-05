@@ -50,7 +50,6 @@ void Entity::move(sf::Vector2f delta)
 void Entity::attack(sf::Vector2f attack_point, std::list<Entity*>& entitys_list)
 {
 	m_vision_angle = VectorArgument(attack_point - m_position);
-
 	if (!m_is_attacking && !m_is_dead)
 	{
 		this->setCurrentAnimation(&m_attack_anim);
@@ -104,6 +103,7 @@ void Entity::die()
 		m_animation_ptr->setPosition(m_position);
 		m_is_dead = true;
 		if (m_death_sound_ptr) m_death_sound_ptr->play();
+		if (m_walk_sound_ptr) m_walk_sound_ptr->stop();
 	}
 }
 
@@ -180,14 +180,15 @@ void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	if (m_animation_ptr && m_current_shader_ptr) target.draw(*m_animation_ptr, m_current_shader_ptr);
 	else if (m_animation_ptr) target.draw(*m_animation_ptr);
 
-	sf::RectangleShape rc;
-	rc.setFillColor(sf::Color::Transparent);
-	rc.setOutlineThickness(-1);
-	for (auto it = m_hitboxes_list.begin(); it != m_hitboxes_list.end(); it++)
-	{
-		rc.setOutlineColor((it->getDamageMultiply() > 1.f) ?  sf::Color::Red : sf::Color::White);
-		rc.setPosition(sf::Vector2f(this->getVisibleBounds().left, this->getVisibleBounds().top) + it->getOffset());
-		rc.setSize(it->getSize());
-		target.draw(rc);
-	}
+	// Drawing hitboxes
+	//sf::RectangleShape rc;
+	//rc.setFillColor(sf::Color::Transparent);
+	//rc.setOutlineThickness(-1);
+	//for (auto it = m_hitboxes_list.begin(); it != m_hitboxes_list.end(); it++)
+	//{
+	//	rc.setOutlineColor((it->getDamageMultiply() > 1.f) ?  sf::Color::Red : sf::Color::White);
+	//	rc.setPosition(sf::Vector2f(this->getVisibleBounds().left, this->getVisibleBounds().top) + it->getOffset());
+	//	rc.setSize(it->getSize());
+	//	target.draw(rc);
+	//}
 }

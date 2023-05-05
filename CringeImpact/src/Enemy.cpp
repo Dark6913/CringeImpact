@@ -8,6 +8,7 @@ uint32_t Enemy::m_instances_count = 0;
 
 Enemy::Enemy()
 {
+	m_target = NULL;
 	m_move_distance = 0;
 	is_have_to_move = false;
 	m_is_walk_sound_play = false;
@@ -19,6 +20,10 @@ Enemy::Enemy()
 	m_speed = 300.f;
 	m_attack_range = 50.f;
 	m_attack_damage = 10.f;
+	m_agressive_range = 256.f;
+	m_living_area_extra_range = 500.f;
+	m_calm_range = 0.f;
+	m_escape_distance = m_agressive_range + 100.f;
 
 	// Move animation
 	m_move_anim.loadFromFile("data/textures/coal/Tleiushiy_tileset(walk).png", 4, 6, 0.2f);
@@ -28,7 +33,6 @@ Enemy::Enemy()
 	m_move_anim.setCurrentRow(STAY_LEFT);
 	m_last_move_dir = MOVE_LEFT;
 	this->setCurrentAnimation(&m_move_anim);
-
 
 	// Attack animation
 	m_attack_anim.loadFromFile("data/textures/coal/Tleiushiy_tileset(attack).png", 4, 4, 0.2f);
@@ -63,6 +67,7 @@ Enemy::Enemy()
 	m_walk_sound.setBuffer(*m_walk_buffer);
 	m_walk_sound.setVolume(20);
 	m_walk_sound.setLoop(true);
+	m_walk_sound_ptr = &m_walk_sound;
 
 	// Hitboxes
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(44, 8), sf::Vector2f(32, 32), 2.f, this));
@@ -98,8 +103,9 @@ void Enemy::moveTo(sf::Vector2f point)
 	else m_last_move_dir = MOVE_RIGHT;
 }
 
-void Enemy::behave(float tick, std::list<Solid*>& solid_list)
+void Enemy::behave(float tick, std::list<Entity*> players_list, std::list<Solid*>& solid_list)
 {
+	// Stop playing sound and return if dead
 	if (m_is_dead)
 	{
 		if (m_is_walk_sound_play)
@@ -109,13 +115,56 @@ void Enemy::behave(float tick, std::list<Solid*>& solid_list)
 		}
 		return;
 	}
-	if (m_walk_timer >= m_walk_cd)
+
+	if (!m_target)
+	{
+		for (auto it = players_list.begin(); it != players_list.end(); it++)
+		{
+			Entity* cur_player = *it;
+			if (!cur_player->isDead() && VectorModule(cur_player->getPosition() - m_position) <= m_agressive_range)
+			{
+				m_target = cur_player;
+				break;
+			}
+		}
+	}
+
+	// Random movement
+	if (!m_target && m_walk_timer >= m_walk_cd)
 	{
 		this->moveTo(RandomVector(m_living_area_center, m_living_area_radius));
 		m_walk_timer = 0.f;
 	}
-	else if (!is_have_to_move) m_walk_timer += tick;
+	else if (!m_target && !is_have_to_move) m_walk_timer += tick;
 
+	// Attack traget
+	if (m_target)
+	{
+		float distance = VectorModule(m_target->getPosition() - m_position);
+		float distance_from_living_center = VectorModule(m_position - m_living_area_center);
+		if (distance > m_attack_range && distance < m_escape_distance && distance_from_living_center < m_calm_range && !m_is_attacking)
+		{
+			this->moveTo(m_target->getPosition());
+		}
+		else if (distance >= m_escape_distance || distance_from_living_center >= m_calm_range)
+		{
+			m_walk_timer = m_walk_cd;
+			m_target = NULL;
+		}
+		else if (distance <= m_attack_range)
+		{
+			this->stopMoving();
+			attack(m_target->getPosition(), players_list);
+		}
+
+		if (m_target && m_target->isDead())
+		{
+			m_walk_timer = m_walk_cd;
+			m_target = NULL;
+		}
+	}
+
+	// Movement
 	if (is_have_to_move)
 	{
 		sf::Vector2f delta_move = sf::Vector2f(m_speed * cos(m_vision_angle) * tick, m_speed * sin(m_vision_angle) * tick);
@@ -144,18 +193,7 @@ void Enemy::behave(float tick, std::list<Solid*>& solid_list)
 			m_is_walk_sound_play = true;
 		}
 
-		if (m_move_distance <= 0)
-		{
-			if (m_is_walk_sound_play)
-			{
-				m_walk_sound.stop();
-				m_is_walk_sound_play = false;
-			}
-
-			m_move_distance = 0;
-			is_have_to_move = false;
-			m_animation_ptr->setCurrentRow(m_last_move_dir + 3);
-		}
+		if (m_move_distance <= 0) stopMoving();
 	}
 }
 
@@ -163,6 +201,28 @@ void Enemy::setLivingArea(sf::Vector2f center, float radius)
 {
 	m_living_area_center = center;
 	m_living_area_radius = radius;
+	m_calm_range = radius + m_living_area_extra_range;
+}
+
+void Enemy::stopMoving()
+{
+	if (is_have_to_move)
+	{
+		if (m_is_walk_sound_play)
+		{
+			m_walk_sound.stop();
+			m_is_walk_sound_play = false;
+		}
+
+		m_move_distance = 0.f;
+		is_have_to_move = false;
+		m_animation_ptr->setCurrentRow(m_last_move_dir + 3);
+	}
+}
+
+void Enemy::setTarget(Entity* target)
+{
+	m_target = target;
 }
 
 Enemy::~Enemy()
