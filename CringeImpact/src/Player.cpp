@@ -36,6 +36,12 @@ Player::Player()
 	// Hitboxes
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(20, 4), sf::Vector2f(40, 40), 2.f, this));
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(16, 44), sf::Vector2f(48, 84), 1.0f, this));
+
+	// Sound
+	m_walk_sound_ptr = SoundRegister::createSound("player-walk-grass", 20.f, true);
+	m_hit_sound_ptr = SoundRegister::createSound("player-hit", 20.f);
+	m_hurt_sound_ptr = SoundRegister::createSound("player-hurt", 20.f);
+	m_death_sound_ptr = SoundRegister::createSound("player-death", 20.f);
 }
 
 void Player::control(float tick, std::list<Solid*> solid_list)

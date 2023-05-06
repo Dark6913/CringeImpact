@@ -39,10 +39,10 @@ Entity::Entity()
 
 Entity::~Entity()
 {
-	if (SoundRegister::isSoundSourceExisting(m_walk_sound_ptr)) SoundRegister::remove(m_walk_sound_ptr);
-	if (SoundRegister::isSoundSourceExisting(m_death_sound_ptr)) SoundRegister::remove(m_death_sound_ptr);
-	if (SoundRegister::isSoundSourceExisting(m_hit_sound_ptr)) SoundRegister::remove(m_hit_sound_ptr);
-	if (SoundRegister::isSoundSourceExisting(m_hurt_sound_ptr)) SoundRegister::remove(m_hurt_sound_ptr);
+	if (SoundRegister::isExisting(m_walk_sound_ptr)) SoundRegister::remove(m_walk_sound_ptr);
+	if (SoundRegister::isExisting(m_death_sound_ptr)) SoundRegister::remove(m_death_sound_ptr);
+	if (SoundRegister::isExisting(m_hit_sound_ptr)) SoundRegister::remove(m_hit_sound_ptr);
+	if (SoundRegister::isExisting(m_hurt_sound_ptr)) SoundRegister::remove(m_hurt_sound_ptr);
 }
 
 Hitbox* Entity::getAttackedHitbox(sf::Vector2f attack_point)
@@ -158,9 +158,9 @@ void Entity::update(float tick)
 		if (!m_is_attacking && !m_is_dead) m_animation_ptr->playLoopInStraightOrder(tick);
 		else if (m_is_attacking && !m_is_dead)
 		{
-			if (!m_is_attack_sound_playing && m_attack_sound_ptr)
+			if (!m_is_attack_sound_playing && m_hit_sound_ptr)
 			{
-				m_attack_sound_ptr->play();
+				m_hit_sound_ptr->play();
 				m_is_attack_sound_playing = true;
 			}
 

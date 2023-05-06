@@ -13,10 +13,10 @@ public:
 	static void loadAllFromDirectory(std::string path);
 
 	// Returns a pointer to pointer to created sound instance with given name
-	static sf::Sound* createSound(std::string name, int volume = 100, bool loop = false);
+	static sf::Sound* createSound(std::string name, float volume = 100.f, bool loop = false);
 
 	// Returns a pointer to pointer to created music opened from file
-	static sf::Music* createMusic(std::string path, int volume = 100, bool loop = false);
+	static sf::Music* createMusic(std::string path, float volume = 100.f, bool loop = false);
 
 	// Remove sound source from queue
 	static void remove(sf::SoundSource* source);
@@ -34,7 +34,7 @@ public:
 	static void clearSoundSourceQueue();
 
 	// Check is sound source existing
-	static bool isSoundSourceExisting(sf::SoundSource* source);
+	static bool isExisting(sf::SoundSource* source);
 private:
 	// Private constructor to avoid creating an instances
 	SoundRegister() {};

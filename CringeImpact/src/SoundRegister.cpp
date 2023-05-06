@@ -30,7 +30,7 @@ void SoundRegister::loadAllFromDirectory(std::string path)
 	}
 }
 
-sf::Sound* SoundRegister::createSound(std::string name, int volume, bool loop)
+sf::Sound* SoundRegister::createSound(std::string name, float volume, bool loop)
 {
 	SoundRegister::onCreate();
 	sf::Sound* sound = new sf::Sound();
@@ -41,7 +41,7 @@ sf::Sound* SoundRegister::createSound(std::string name, int volume, bool loop)
 	return sound;
 }
 
-sf::Music* SoundRegister::createMusic(std::string path, int volume, bool loop)
+sf::Music* SoundRegister::createMusic(std::string path, float volume, bool loop)
 {
 	SoundRegister::onCreate();
 	sf::Music* music = new sf::Music();
@@ -100,7 +100,7 @@ void SoundRegister::clearSoundSourceQueue()
 	}
 }
 
-bool SoundRegister::isSoundSourceExisting(sf::SoundSource* source)
+bool SoundRegister::isExisting(sf::SoundSource* source)
 {
 	return m_sounds_set.find(source) != m_sounds_set.end();
 }
