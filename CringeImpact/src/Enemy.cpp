@@ -52,7 +52,7 @@ Enemy::Enemy()
 	if (!m_death_buffer)
 	{
 		m_death_buffer = new sf::SoundBuffer();
-		m_death_buffer->loadFromFile("data/sound/coal_death_sound.ogg");
+		m_death_buffer->loadFromFile("data/audio/sound/coal-death.ogg");
 	}
 	m_death_sound.setBuffer(*m_death_buffer);
 	m_death_sound.setVolume(100);
@@ -62,7 +62,7 @@ Enemy::Enemy()
 	if (!m_walk_buffer)
 	{
 		m_walk_buffer = new sf::SoundBuffer();
-		m_walk_buffer->loadFromFile("data/sound/walk_grass.ogg");
+		m_walk_buffer->loadFromFile("data/audio/sound/player-walk-grass.ogg");
 	}
 	m_walk_sound.setBuffer(*m_walk_buffer);
 	m_walk_sound.setVolume(20);
@@ -116,12 +116,15 @@ void Enemy::behave(float tick, std::list<Entity*> players_list, std::list<Solid*
 		return;
 	}
 
+	// Finding target
+	float distance_from_living_center = VectorModule(m_position - m_living_area_center);
 	if (!m_target)
 	{
 		for (auto it = players_list.begin(); it != players_list.end(); it++)
 		{
 			Entity* cur_player = *it;
-			if (!cur_player->isDead() && VectorModule(cur_player->getPosition() - m_position) <= m_agressive_range)
+			if (!cur_player->isDead() && distance_from_living_center <= m_living_area_radius &&
+				VectorModule(cur_player->getPosition() - m_position) <= m_agressive_range)
 			{
 				m_target = cur_player;
 				break;
@@ -141,7 +144,6 @@ void Enemy::behave(float tick, std::list<Entity*> players_list, std::list<Solid*
 	if (m_target)
 	{
 		float distance = VectorModule(m_target->getPosition() - m_position);
-		float distance_from_living_center = VectorModule(m_position - m_living_area_center);
 		if (distance > m_attack_range && distance < m_escape_distance && distance_from_living_center < m_calm_range && !m_is_attacking)
 		{
 			this->moveTo(m_target->getPosition());

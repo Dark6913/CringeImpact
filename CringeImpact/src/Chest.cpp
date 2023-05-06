@@ -12,7 +12,7 @@ Chest::Chest()
 	if (!m_sound_buffer)
 	{
 		m_sound_buffer = new sf::SoundBuffer();
-		m_sound_buffer->loadFromFile("data/sound/chest.ogg");
+		m_sound_buffer->loadFromFile("data/audio/sound/chest-barrel-open.ogg");
 	}
 	m_instances_count++;
 	m_sound.setBuffer(*m_sound_buffer);

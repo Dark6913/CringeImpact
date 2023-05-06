@@ -180,6 +180,7 @@
     <ClCompile Include="src\MapObject.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Solid.cpp" />
+    <ClCompile Include="src\SoundRegister.cpp" />
     <ClCompile Include="src\Tree.cpp" />
     <ClCompile Include="src\VectorMath.cpp" />
     <ClCompile Include="src\World.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="include\MapObject.hpp" />
     <ClInclude Include="include\Player.hpp" />
     <ClInclude Include="include\Solid.hpp" />
+    <ClInclude Include="include\SoundRegister.hpp" />
     <ClInclude Include="include\Tree.hpp" />
     <ClInclude Include="include\VectorMath.hpp" />
     <ClInclude Include="include\World.hpp" />

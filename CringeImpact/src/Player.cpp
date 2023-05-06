@@ -32,7 +32,7 @@ Player::Player()
 	if (!m_walk_buffer)
 	{
 		m_walk_buffer = new sf::SoundBuffer();
-		m_walk_buffer->loadFromFile("data/sound/walk_grass.ogg");
+		m_walk_buffer->loadFromFile("data/audio/sound/player-walk-grass.ogg");
 		m_walk_sound.setBuffer(*m_walk_buffer);
 		m_walk_sound.setVolume(20);
 		m_walk_sound.setLoop(true);
@@ -42,7 +42,7 @@ Player::Player()
 	if (!m_attack_buffer)
 	{
 		m_attack_buffer = new sf::SoundBuffer();
-		m_attack_buffer->loadFromFile("data/sound/hit.ogg");
+		m_attack_buffer->loadFromFile("data/audio/sound/player-hit.ogg");
 		m_attack_sound.setBuffer(*m_attack_buffer);
 		m_attack_sound.setVolume(20);
 		m_attack_sound.setLoop(false);

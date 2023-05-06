@@ -4,7 +4,7 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 
-#define CRINGE_IMPACT_VERSION	"0.2a"
+#define CRINGE_IMPACT_VERSION	"0.2.1a"
 
 Client::Client()
 {
@@ -62,7 +62,7 @@ void Client::run()
 	cs.setPosition(m_world.getSpawnPoint() + sf::Vector2f(400, 1000));
 	cs.setOutlineThickness(1);
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		Enemy* enemy = new Enemy();
 		enemy->setPosition(RandomVector(cs.getPosition(), cs.getRadius()));
