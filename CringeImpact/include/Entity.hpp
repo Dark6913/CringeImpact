@@ -41,6 +41,7 @@ protected:
 	
 public:
 	Entity();
+	~Entity();
 
 	// Setters
 	void setMaxHP(float value) { m_max_hp = value; };
@@ -75,10 +76,11 @@ protected:
 	std::list<Hitbox> m_hitboxes_list;
 
 	bool m_is_attack_sound_playing;
-	sf::Sound* m_attack_sound_ptr;
+
+	sf::Sound* m_hit_sound_ptr;
+	sf::Sound* m_hurt_sound_ptr;
 	sf::Sound* m_death_sound_ptr;
 	sf::Sound* m_walk_sound_ptr;
-	sf::Sound* m_hurt_sound_ptr;
 
 	float m_max_hp;
 	float m_current_hp;

@@ -30,20 +30,24 @@ void SoundRegister::loadAllFromDirectory(std::string path)
 	}
 }
 
-sf::Sound* SoundRegister::createSound(std::string name)
+sf::Sound* SoundRegister::createSound(std::string name, int volume, bool loop)
 {
 	SoundRegister::onCreate();
 	sf::Sound* sound = new sf::Sound();
 	sound->setBuffer(*m_buffer_map.at(name));
+	sound->setVolume(volume);
+	sound->setLoop(loop);
 	SoundRegister::registerSource(sound);
 	return sound;
 }
 
-sf::Music* SoundRegister::createMusic(std::string path)
+sf::Music* SoundRegister::createMusic(std::string path, int volume, bool loop)
 {
 	SoundRegister::onCreate();
 	sf::Music* music = new sf::Music();
 	music->openFromFile(path);
+	music->setVolume(volume);
+	music->setLoop(loop);
 	SoundRegister::registerSource(music);
 	return music;
 }

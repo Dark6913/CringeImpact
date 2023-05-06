@@ -1,5 +1,6 @@
 #include "Entity.hpp"
 #include "VectorMath.hpp"
+#include "SoundRegister.hpp"
 
 sf::Shader Entity::m_damaged_shader;
 bool Entity::m_is_damaged_shader_loaded = false;
@@ -18,13 +19,15 @@ Entity::Entity()
 	m_vision_angle = 0;
 	m_is_attack_sound_playing = false;
 	m_is_dead = false;
-	m_attack_sound_ptr = NULL;
-	m_death_sound_ptr = NULL;
 	m_is_damaged_recently = false;
 	m_current_shader_ptr = NULL;
 	m_damaged_timer = 0.f;
 	m_attack_range = 0.f;
 	m_attack_damage = 0.f;
+
+	m_walk_sound_ptr = NULL;
+	m_death_sound_ptr = NULL;
+	m_hit_sound_ptr = NULL;
 	m_hurt_sound_ptr = NULL;
 
 	if (!m_is_damaged_shader_loaded)
@@ -32,6 +35,14 @@ Entity::Entity()
 		m_damaged_shader.loadFromFile("data/shaders/damaged.frag", sf::Shader::Fragment);
 		m_is_damaged_shader_loaded = true;
 	}
+}
+
+Entity::~Entity()
+{
+	if (SoundRegister::isSoundSourceExisting(m_walk_sound_ptr)) SoundRegister::remove(m_walk_sound_ptr);
+	if (SoundRegister::isSoundSourceExisting(m_death_sound_ptr)) SoundRegister::remove(m_death_sound_ptr);
+	if (SoundRegister::isSoundSourceExisting(m_hit_sound_ptr)) SoundRegister::remove(m_hit_sound_ptr);
+	if (SoundRegister::isSoundSourceExisting(m_hurt_sound_ptr)) SoundRegister::remove(m_hurt_sound_ptr);
 }
 
 Hitbox* Entity::getAttackedHitbox(sf::Vector2f attack_point)
