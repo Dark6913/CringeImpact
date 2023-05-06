@@ -2,10 +2,6 @@
 #include "VectorMath.hpp"
 #include <random>
 
-sf::SoundBuffer* Enemy::m_death_buffer = NULL;
-sf::SoundBuffer* Enemy::m_walk_buffer = NULL;
-uint32_t Enemy::m_instances_count = 0;
-
 Enemy::Enemy()
 {
 	m_target = NULL;
@@ -49,31 +45,9 @@ Enemy::Enemy()
 	m_collisions.push_back(sf::IntRect(48, 120, 28, 8));
 	this->setPosition(m_position);
 
-	if (!m_death_buffer)
-	{
-		m_death_buffer = new sf::SoundBuffer();
-		m_death_buffer->loadFromFile("data/audio/sound/coal-death.ogg");
-	}
-	m_death_sound.setBuffer(*m_death_buffer);
-	m_death_sound.setVolume(100);
-	m_death_sound.setLoop(false);
-	m_death_sound_ptr = &m_death_sound;
-
-	if (!m_walk_buffer)
-	{
-		m_walk_buffer = new sf::SoundBuffer();
-		m_walk_buffer->loadFromFile("data/audio/sound/player-walk-grass.ogg");
-	}
-	m_walk_sound.setBuffer(*m_walk_buffer);
-	m_walk_sound.setVolume(20);
-	m_walk_sound.setLoop(true);
-	m_walk_sound_ptr = &m_walk_sound;
-
 	// Hitboxes
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(44, 8), sf::Vector2f(32, 32), 2.f, this));
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(36, 40), sf::Vector2f(52, 88), 1.0f, this));
-
-	m_instances_count++;
 }
 
 void Enemy::moveTo(sf::Vector2f point)
@@ -111,7 +85,7 @@ void Enemy::behave(float tick, std::list<Entity*> players_list, std::list<Solid*
 		if (m_is_walk_sound_play)
 		{
 			m_is_walk_sound_play = false;
-			m_walk_sound.stop();
+			if (m_walk_sound_ptr) m_walk_sound_ptr->stop();
 		}
 		return;
 	}
@@ -186,13 +160,16 @@ void Enemy::behave(float tick, std::list<Entity*> players_list, std::list<Solid*
 		this->move(delta_move);
 		m_move_distance -= VectorModule(delta_move);
 
-		float walk_sound_volume = 20.f * (1.f - VectorModule(m_listener_position - m_position) / 1000.f);
-		if (walk_sound_volume < 0) walk_sound_volume = 0;
-		m_walk_sound.setVolume(walk_sound_volume);
-		if (!m_is_walk_sound_play)
+		if (m_walk_sound_ptr)
 		{
-			m_walk_sound.play();
-			m_is_walk_sound_play = true;
+			float walk_sound_volume = 20.f * (1.f - VectorModule(m_listener_position - m_position) / 1000.f);
+			if (walk_sound_volume < 0) walk_sound_volume = 0;
+			m_walk_sound_ptr->setVolume(walk_sound_volume);
+			if (!m_is_walk_sound_play)
+			{
+				m_walk_sound_ptr->play();
+				m_is_walk_sound_play = true;
+			}
 		}
 
 		if (m_move_distance <= 0) stopMoving();
@@ -212,7 +189,7 @@ void Enemy::stopMoving()
 	{
 		if (m_is_walk_sound_play)
 		{
-			m_walk_sound.stop();
+			if (m_walk_sound_ptr) m_walk_sound_ptr->stop();
 			m_is_walk_sound_play = false;
 		}
 
@@ -225,14 +202,4 @@ void Enemy::stopMoving()
 void Enemy::setTarget(Entity* target)
 {
 	m_target = target;
-}
-
-Enemy::~Enemy()
-{
-	m_instances_count--;
-	if (m_instances_count == 0)
-	{
-		if (m_death_buffer) delete m_death_buffer;
-		if (m_walk_buffer) delete m_walk_buffer;
-	}
 }

@@ -1,8 +1,5 @@
 #include "Player.hpp"
-
-sf::SoundBuffer* Player::m_walk_buffer = NULL;
-sf::SoundBuffer* Player::m_attack_buffer = NULL;
-uint32_t Player::m_instances_count = 0;
+#include "SoundRegister.hpp"
 
 Player::Player()
 {
@@ -29,26 +26,6 @@ Player::Player()
 	m_collisions.push_back(sf::IntRect(24, 120, 32, 8));
 	this->setPosition(m_position);
 
-	if (!m_walk_buffer)
-	{
-		m_walk_buffer = new sf::SoundBuffer();
-		m_walk_buffer->loadFromFile("data/audio/sound/player-walk-grass.ogg");
-		m_walk_sound.setBuffer(*m_walk_buffer);
-		m_walk_sound.setVolume(20);
-		m_walk_sound.setLoop(true);
-	}
-	m_walk_sound_ptr = &m_walk_sound;
-
-	if (!m_attack_buffer)
-	{
-		m_attack_buffer = new sf::SoundBuffer();
-		m_attack_buffer->loadFromFile("data/audio/sound/player-hit.ogg");
-		m_attack_sound.setBuffer(*m_attack_buffer);
-		m_attack_sound.setVolume(20);
-		m_attack_sound.setLoop(false);
-	}
-	m_attack_sound_ptr = &m_attack_sound;
-
 	m_is_walk_sound_plays = false;
 	m_is_attacking = false;
 
@@ -59,8 +36,6 @@ Player::Player()
 	// Hitboxes
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(20, 4), sf::Vector2f(40, 40), 2.f, this));
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(16, 44), sf::Vector2f(48, 84), 1.0f, this));
-
-	m_instances_count++;
 }
 
 void Player::control(float tick, std::list<Solid*> solid_list)
@@ -102,7 +77,7 @@ void Player::control(float tick, std::list<Solid*> solid_list)
 
 		if (!m_is_walk_sound_plays)
 		{
-			m_walk_sound.play();
+			if (m_walk_sound_ptr) m_walk_sound_ptr->play();
 			m_is_walk_sound_plays = true;
 		}
 
@@ -121,20 +96,10 @@ void Player::control(float tick, std::list<Solid*> solid_list)
 	{
 		if (m_is_walk_sound_plays)
 		{
-			m_walk_sound.pause();
+			if (m_walk_sound_ptr) m_walk_sound_ptr->pause();
 			m_is_walk_sound_plays = false;
 		}
 
 		if (!m_is_attacking) m_animation_ptr->setCurrentRow(m_last_move_dir + 3);
-	}
-}
-
-Player::~Player()
-{
-	m_instances_count--;
-	if (m_instances_count == 0)
-	{
-		delete m_walk_buffer;
-		delete m_attack_buffer;
 	}
 }

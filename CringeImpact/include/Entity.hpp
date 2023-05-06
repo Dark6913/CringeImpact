@@ -78,6 +78,7 @@ protected:
 	sf::Sound* m_attack_sound_ptr;
 	sf::Sound* m_death_sound_ptr;
 	sf::Sound* m_walk_sound_ptr;
+	sf::Sound* m_hurt_sound_ptr;
 
 	float m_max_hp;
 	float m_current_hp;

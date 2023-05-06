@@ -25,6 +25,7 @@ Entity::Entity()
 	m_damaged_timer = 0.f;
 	m_attack_range = 0.f;
 	m_attack_damage = 0.f;
+	m_hurt_sound_ptr = NULL;
 
 	if (!m_is_damaged_shader_loaded)
 	{
@@ -111,6 +112,7 @@ void Entity::takeDamage(float damage)
 {
 	if (!m_is_dead)
 	{
+		if (m_hurt_sound_ptr) m_hurt_sound_ptr->play();
 		m_is_damaged_recently = true;
 		m_current_shader_ptr = &m_damaged_shader;
 		m_current_hp -= damage;

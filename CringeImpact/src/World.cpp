@@ -10,13 +10,13 @@
 
 World::World()
 {
-	m_textures_path = "data/map/";
+	m_textures_path = "data/textures/";
 	m_map_scale = sf::Vector2i(4, 4);
 }
 
 World::World(std::string path)
 {
-	m_textures_path = "data/map/";
+	m_textures_path = "data/textures/";
 	m_map_scale = sf::Vector2i(4, 4);
 	this->loadFromFile(path);
 }

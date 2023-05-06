@@ -3,14 +3,16 @@
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include "SoundRegister.hpp"
 
 #define CRINGE_IMPACT_VERSION	"0.2.1a"
 
 Client::Client()
 {
+	SoundRegister::loadAllFromDirectory("data/audio/sound/");
 	m_window.create(sf::VideoMode(1600, 800), std::string("Cringe Impact v") + CRINGE_IMPACT_VERSION);
 
-	m_world.loadFromFile("data/map/Map.tmx");
+	m_world.loadFromFile("data/map/map.tmx");
 	sf::Image cursor_image;
 	cursor_image.loadFromFile("data/textures/pointer.png");
 	m_cursor.loadFromPixels(cursor_image.getPixelsPtr(), cursor_image.getSize(), sf::Vector2u(0, 0));
@@ -59,7 +61,7 @@ void Client::run()
 	cs.setOutlineColor(sf::Color::Red);
 	cs.setRadius(500.f);
 	cs.setOrigin(sf::Vector2f(500.f, 500.f));
-	cs.setPosition(m_world.getSpawnPoint() + sf::Vector2f(400, 1000));
+	cs.setPosition(m_world.getSpawnPoint() + sf::Vector2f(400, 1400));
 	cs.setOutlineThickness(1);
 
 	for (int i = 0; i < 5; i++)
@@ -71,12 +73,6 @@ void Client::run()
 		animated_objects.push_back((IAnimated*)enemy);
 		solid_objects.push_back((Solid*)enemy);
 	}
-
-	//sf::Music music;
-	//music.openFromFile("data/sound/relax_2.ogg");
-	//music.setLoop(true);
-	//music.setVolume(20);
-	//music.play();
 
 	sf::Clock clock;
 	while (m_window.isOpen())
@@ -147,6 +143,7 @@ void Client::run()
 	}
 	m_world.release();
 	Animation::release();
+	SoundRegister::clear();
 	for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
 		delete* it;
 }
