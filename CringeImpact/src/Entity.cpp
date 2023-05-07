@@ -24,6 +24,7 @@ Entity::Entity()
 	m_damaged_timer = 0.f;
 	m_attack_range = 0.f;
 	m_attack_damage = 0.f;
+	m_is_ready_to_respawn = false;
 
 	m_walk_sound_ptr = NULL;
 	m_death_sound_ptr = NULL;
@@ -113,9 +114,22 @@ void Entity::die()
 		this->setCurrentAnimation(&m_die_anim);
 		m_animation_ptr->setCurrentRow(m_last_move_dir - 1);
 		m_animation_ptr->setPosition(m_position);
+		m_animation_ptr->reset();
 		m_is_dead = true;
 		if (m_death_sound_ptr) m_death_sound_ptr->play();
 		if (m_walk_sound_ptr) m_walk_sound_ptr->stop();
+	}
+}
+
+void Entity::respawn(sf::Vector2f position)
+{
+	if (m_is_ready_to_respawn)
+	{
+		m_is_dead = false;
+		this->setCurrentAnimation(&m_move_anim);
+		m_current_hp = m_max_hp;
+		this->setPosition(position);
+		m_is_ready_to_respawn = false;
 	}
 }
 
@@ -175,7 +189,10 @@ void Entity::update(float tick)
 		}
 		else if (m_is_dead)
 		{
-			m_animation_ptr->playInStraightOrder(tick);
+			if (!m_is_ready_to_respawn && m_animation_ptr->playInStraightOrder(tick))
+			{
+				m_is_ready_to_respawn = true;
+			}
 		}
 	}
 }

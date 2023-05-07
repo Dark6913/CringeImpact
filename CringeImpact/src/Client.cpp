@@ -59,9 +59,9 @@ void Client::run()
 	sf::CircleShape cs;
 	cs.setFillColor(sf::Color::Transparent);
 	cs.setOutlineColor(sf::Color::Red);
-	cs.setRadius(500.f);
-	cs.setOrigin(sf::Vector2f(500.f, 500.f));
-	cs.setPosition(m_world.getSpawnPoint() + sf::Vector2f(400, 1400));
+	cs.setRadius(1000.f);
+	cs.setOrigin(sf::Vector2f(1000.f, 1000.f));
+	cs.setPosition(sf::Vector2f(2600, 3500));
 	cs.setOutlineThickness(1);
 
 	for (int i = 0; i < 5; i++)
@@ -73,6 +73,8 @@ void Client::run()
 		animated_objects.push_back((IAnimated*)enemy);
 		solid_objects.push_back((Solid*)enemy);
 	}
+
+	float respawn_timer = 3.8f;
 
 	sf::Clock clock;
 	while (m_window.isOpen())
@@ -109,8 +111,25 @@ void Client::run()
 			}
 		}
 
+		if (player.isDead())
+		{
+			if (respawn_timer <= 0.f)
+			{
+				player.respawn(m_world.getSpawnPoint());
+				respawn_timer = 3.8f;
+			}
+			else respawn_timer -= tick;
+		}
+
 		player.control(tick, solid_objects);
 		m_camera.setCenter(RoundVector(player.getPosition()));
+
+		std::cout << m_world.getTileType(
+			{
+				player.getVisibleBounds().left + player.getVisibleBounds().width / 2.f,
+				player.getVisibleBounds().top + player.getVisibleBounds().height
+			}
+		) << std::endl;
 
 		m_world.setCameraRect(this->getCameraRect());
 		m_world.update();

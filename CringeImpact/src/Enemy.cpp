@@ -1,6 +1,7 @@
 #include "Enemy.hpp"
 #include "VectorMath.hpp"
 #include <random>
+#include "SoundRegister.hpp"
 
 Enemy::Enemy()
 {
@@ -42,12 +43,19 @@ Enemy::Enemy()
 	m_die_anim.setOrigin(sf::Vector2f(.5f, .5f));
 	m_die_anim.reset();
 
+	// Collsion
 	m_collisions.push_back(sf::IntRect(48, 120, 28, 8));
 	this->setPosition(m_position);
 
 	// Hitboxes
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(44, 8), sf::Vector2f(32, 32), 2.f, this));
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(36, 40), sf::Vector2f(52, 88), 1.0f, this));
+
+	// Sound
+	m_walk_sound_ptr = SoundRegister::createSound("player-walk-grass", 100.f, true);
+	m_death_sound_ptr = SoundRegister::createSound("coal-death", 50.f);
+	m_hit_sound_ptr = SoundRegister::createSound("coal-hit", 10.f);
+	m_hurt_sound_ptr = SoundRegister::createSound("coal-hurt", 30.f);
 }
 
 void Enemy::moveTo(sf::Vector2f point)

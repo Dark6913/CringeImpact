@@ -204,6 +204,20 @@ std::list<MapObject*>& World::getLootList()
 	return m_loot_list;
 }
 
+std::string World::getTileType(sf::Vector2f coord)
+{
+	tinytmx::TileLayer* tile_layer = (tinytmx::TileLayer*)m_layers.at("Main tile layer");
+	sf::Vector2i tile_coord = { 
+		(int)coord.x / (int)m_map.GetTileWidth() / m_map_scale.x,
+		(int)coord.y / (int)m_map.GetTileHeight() / m_map_scale.y
+	};
+	int tileset_id = tile_layer->GetDataTileFiniteMap()->GetTile(tile_coord.x, tile_coord.y).tilesetId;
+	const std::string& source = m_map.GetTileset(tileset_id)->GetImage()->GetSource();
+	size_t offset = source.rfind('/');
+	offset = (offset == source.npos) ? 0 : offset + 1;
+	return source.substr(offset, source.rfind('.') - offset);
+}
+
 void World::update()
 {
 	uint32_t clock_value = m_clock.getElapsedTime().asMilliseconds();

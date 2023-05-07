@@ -13,6 +13,7 @@ public:
 	void setCameraRect(sf::IntRect camera_rect);
 	std::list<MapObject*>& getNatureList();
 	std::list<MapObject*>& getLootList();
+	std::string getTileType(sf::Vector2f coord);
 
 	sf::Vector2f getSpawnPoint()
 	{

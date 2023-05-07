@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include "SoundRegister.hpp"
+#include <iostream>
 
 Player::Player()
 {
@@ -38,7 +39,7 @@ Player::Player()
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(16, 44), sf::Vector2f(48, 84), 1.0f, this));
 
 	// Sound
-	m_walk_sound_ptr = SoundRegister::createSound("player-walk-grass", 20.f, true);
+	m_walk_sound_ptr = SoundRegister::createSound("player-walk-road", 20.f, true);
 	m_hit_sound_ptr = SoundRegister::createSound("player-hit", 20.f);
 	m_hurt_sound_ptr = SoundRegister::createSound("player-hurt", 20.f);
 	m_death_sound_ptr = SoundRegister::createSound("player-death", 20.f);

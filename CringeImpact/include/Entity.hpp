@@ -44,6 +44,7 @@ public:
 	~Entity();
 
 	// Setters
+
 	void setMaxHP(float value) { m_max_hp = value; };
 	void setHP(float value) { m_current_hp = value; };
 	void setMaxMP(float value) { m_max_mp = value; };
@@ -52,6 +53,7 @@ public:
 	void setStamina(float value) { m_current_stamina = value; };
 
 	// Getters
+
 	float getMaxHP() { return m_max_hp; };
 	float getHP() { return m_current_hp; };
 	float getMaxMP() { return m_max_mp; };
@@ -67,6 +69,7 @@ public:
 	void move(sf::Vector2f delta);
 	void attack(sf::Vector2f attack_point, std::list<Entity*>& entitys_list);
 	void die();
+	void respawn(sf::Vector2f position);
 	void takeDamage(float damage);
 	bool isDead();
 	virtual void update(float tick) override;
@@ -100,6 +103,7 @@ protected:
 
 	bool m_is_attacking;
 	bool m_is_dead;
+	bool m_is_ready_to_respawn;
 	float m_vision_angle;
 	bool m_is_damaged_recently;
 

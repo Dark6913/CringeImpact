@@ -16,4 +16,7 @@ private:
 	Animation m_animation;
 	bool m_is_open;
 	bool m_was_open;
+
+	sf::Sound* m_open_sound_ptr;
+	sf::Sound* m_close_sound_ptr;
 };
