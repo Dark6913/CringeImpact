@@ -8,18 +8,17 @@
 #include "Chest.hpp"
 #include "World.hpp"
 
-World::World()
-{
-	m_textures_path = "data/textures/";
-	m_map_scale = sf::Vector2i(4, 4);
-}
-
-World::World(std::string path)
-{
-	m_textures_path = "data/textures/";
-	m_map_scale = sf::Vector2i(4, 4);
-	this->loadFromFile(path);
-}
+std::string World::m_textures_path = "data/textures/";
+tinytmx::Map World::m_map;
+std::unordered_map<std::string, const tinytmx::Layer*> World::m_layers;
+std::unordered_map<const tinytmx::Tile*, World::TileAnimation> World::m_tile_anim;
+std::vector<sf::Texture> World::m_tilesets;
+std::list<MapObject*> World::m_nature_list;
+std::list<MapObject*> World::m_loot_list;
+sf::Vector2i World::m_map_scale = {4, 4};
+sf::Clock World::m_clock;
+sf::IntRect World::m_camera_rect;
+World::MapSolid World::m_map_solid;
 
 void World::loadFromFile(std::string path)
 {
@@ -54,9 +53,9 @@ void World::loadFromFile(std::string path)
 		}
 	}
 
-	this->loadMapCollision();
-	this->loadNature();
-	this->loadLoot();
+	World::loadMapCollision();
+	World::loadNature();
+	World::loadLoot();
 }
 
 void World::setCameraRect(sf::IntRect camera_rect)
@@ -85,7 +84,7 @@ void World::loadMapCollision()
 				for (int cb_id = 0; cb_id < collision_group->GetNumObjects(); cb_id++)
 				{
 					const tinytmx::Object* object = collision_group->GetObject(cb_id);
-					m_collisions.push_back(
+					m_map_solid.addCollBox(
 						sf::IntRect(
 							(offset.x + object->GetX()) * m_map_scale.x,
 							(offset.y + object->GetY()) * m_map_scale.y,
@@ -204,7 +203,7 @@ std::list<MapObject*>& World::getLootList()
 	return m_loot_list;
 }
 
-std::string World::getTileType(sf::Vector2f coord)
+World::SurfaceType World::getSurfaceType(sf::Vector2f coord)
 {
 	tinytmx::TileLayer* tile_layer = (tinytmx::TileLayer*)m_layers.at("Main tile layer");
 	sf::Vector2i tile_coord = { 
@@ -215,7 +214,16 @@ std::string World::getTileType(sf::Vector2f coord)
 	const std::string& source = m_map.GetTileset(tileset_id)->GetImage()->GetSource();
 	size_t offset = source.rfind('/');
 	offset = (offset == source.npos) ? 0 : offset + 1;
-	return source.substr(offset, source.rfind('.') - offset);
+	std::string str_type = source.substr(offset, source.rfind('.') - offset);
+	
+	if (str_type == "grass") return TT_GRASS;
+	else if (str_type == "road") return TT_ROAD;
+	else return TT_UNKNOWN;
+}
+
+Solid* World::getMapCollision()
+{
+	return (Solid*)&m_map_solid;
 }
 
 void World::update()
@@ -234,7 +242,7 @@ void World::update()
 	}
 }
 
-void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void World::render(sf::RenderTarget& target)
 {
 	sf::Sprite sprite;
 	tinytmx::TileLayer* layer = (tinytmx::TileLayer*)m_layers.at("Main tile layer");
@@ -267,7 +275,7 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const
 				y * m_map_scale.y * (int)tileset->GetTileHeight()
 			);
 
-			target.draw(sprite, states);
+			target.draw(sprite);
 		}
 	}
 }
@@ -278,4 +286,9 @@ void World::release()
 		delete *it;
 	for (auto it = m_loot_list.begin(); it != m_loot_list.end(); it++)
 		delete* it;
+}
+
+void World::MapSolid::addCollBox(sf::IntRect rect)
+{
+	this->m_collisions.push_back(rect);
 }

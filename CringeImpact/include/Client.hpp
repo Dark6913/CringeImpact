@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "World.hpp"
 #include "MapObject.hpp"
 
 class Client
@@ -12,7 +11,6 @@ public:
 private:
 	sf::RenderWindow m_window;
 	sf::Cursor m_cursor;
-	World m_world;
 	sf::View m_camera;
 	sf::Font m_font;
 	sf::Text m_fps;

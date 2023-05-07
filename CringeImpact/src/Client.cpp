@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "World.hpp"
 #include "Chest.hpp"
 #include "Entity.hpp"
 #include "Player.hpp"
@@ -10,16 +11,16 @@
 Client::Client()
 {
 	SoundRegister::loadAllFromDirectory("data/audio/sound/");
+	World::loadFromFile("data/map/map.tmx");
 	m_window.create(sf::VideoMode(1600, 800), std::string("Cringe Impact v") + CRINGE_IMPACT_VERSION);
 
-	m_world.loadFromFile("data/map/map.tmx");
 	sf::Image cursor_image;
 	cursor_image.loadFromFile("data/textures/pointer.png");
 	m_cursor.loadFromPixels(cursor_image.getPixelsPtr(), cursor_image.getSize(), sf::Vector2u(0, 0));
 	m_window.setMouseCursor(m_cursor);
 
 	m_camera.setSize((sf::Vector2f)m_window.getSize());
-	m_camera.setCenter(m_world.getSpawnPoint());
+	m_camera.setCenter(World::getSpawnPoint());
 
 	m_font.loadFromFile("data/fonts/Jost-Regular.ttf");
 	m_fps.setFont(m_font);
@@ -30,13 +31,13 @@ Client::Client()
 
 void Client::run()
 {
-	std::list<MapObject*>& nature = m_world.getNatureList();
-	std::list<MapObject*>& loot = m_world.getLootList();
+	std::list<MapObject*>& nature = World::getNatureList();
+	std::list<MapObject*>& loot = World::getLootList();
 	std::list<Solid*> solid_objects;
 	std::list<IAnimated*> animated_objects;
 	std::list<Entity*> enemy_list;
 	std::list<Entity*> players_list;
-	solid_objects.push_back((Solid*)&m_world);
+	solid_objects.push_back(World::getMapCollision());
 	for (auto it = nature.begin(); it != nature.end(); it++)
 	{
 		solid_objects.push_back((Solid*)*it);
@@ -51,7 +52,7 @@ void Client::run()
 	// THE BUG
 	// sf::Vector2f(3357.49878, 9413.87305)
 	Player player;
-	player.setPosition(m_world.getSpawnPoint());
+	player.setPosition(World::getSpawnPoint());
 	animated_objects.push_back((IAnimated*)&player);
 	solid_objects.push_back((Solid*)&player);
 	players_list.push_back((Entity*)&player);
@@ -115,7 +116,7 @@ void Client::run()
 		{
 			if (respawn_timer <= 0.f)
 			{
-				player.respawn(m_world.getSpawnPoint());
+				player.respawn(World::getSpawnPoint());
 				respawn_timer = 3.8f;
 			}
 			else respawn_timer -= tick;
@@ -124,19 +125,12 @@ void Client::run()
 		player.control(tick, solid_objects);
 		m_camera.setCenter(RoundVector(player.getPosition()));
 
-		std::cout << m_world.getTileType(
-			{
-				player.getVisibleBounds().left + player.getVisibleBounds().width / 2.f,
-				player.getVisibleBounds().top + player.getVisibleBounds().height
-			}
-		) << std::endl;
-
-		m_world.setCameraRect(this->getCameraRect());
-		m_world.update();
+		World::setCameraRect(this->getCameraRect());
+		World::update();
 
 		m_window.setView(m_camera);
 		m_window.clear();
-		m_window.draw(m_world);
+		World::render(m_window);
 
 		for (auto it = loot.begin(); it != loot.end(); it++)
 			(*it)->setListenerPosition(player.getPosition());
@@ -160,7 +154,7 @@ void Client::run()
 		this->drawInterface();
 		m_window.display();
 	}
-	m_world.release();
+	World::release();
 	Animation::release();
 	SoundRegister::clear();
 	for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
