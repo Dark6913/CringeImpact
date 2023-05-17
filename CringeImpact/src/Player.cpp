@@ -93,7 +93,7 @@ void Player::control(float tick, std::list<Solid*> solid_list)
 
 		if (m_last_st != st)
 		{
-			if (SoundRegister::isExisting(m_walk_sound_ptr))
+			if (SoundRegister::isSourceExisting(m_walk_sound_ptr))
 			{
 				m_walk_sound_ptr->stop();
 				SoundRegister::remove(m_walk_sound_ptr);

@@ -40,10 +40,10 @@ Entity::Entity()
 
 Entity::~Entity()
 {
-	if (SoundRegister::isExisting(m_walk_sound_ptr)) SoundRegister::remove(m_walk_sound_ptr);
-	if (SoundRegister::isExisting(m_death_sound_ptr)) SoundRegister::remove(m_death_sound_ptr);
-	if (SoundRegister::isExisting(m_hit_sound_ptr)) SoundRegister::remove(m_hit_sound_ptr);
-	if (SoundRegister::isExisting(m_hurt_sound_ptr)) SoundRegister::remove(m_hurt_sound_ptr);
+	if (SoundRegister::isSourceExisting(m_walk_sound_ptr)) SoundRegister::remove(m_walk_sound_ptr);
+	if (SoundRegister::isSourceExisting(m_death_sound_ptr)) SoundRegister::remove(m_death_sound_ptr);
+	if (SoundRegister::isSourceExisting(m_hit_sound_ptr)) SoundRegister::remove(m_hit_sound_ptr);
+	if (SoundRegister::isSourceExisting(m_hurt_sound_ptr)) SoundRegister::remove(m_hurt_sound_ptr);
 }
 
 Hitbox* Entity::getAttackedHitbox(sf::Vector2f attack_point)
