@@ -8,8 +8,8 @@ Chest::Chest()
 	m_was_open = false;
 	m_animation_ptr->reset();
 
-	m_open_sound_ptr = NULL;
-	m_close_sound_ptr = NULL;
+	m_open_sound_ptr = SoundRegister::createSound("chest-medium-open", 50.f);
+	m_close_sound_ptr = SoundRegister::createSound("chest-medium-close", 30.f);
 }
 
 void Chest::open()

@@ -23,9 +23,9 @@ public:
 
 	enum SurfaceType : int
 	{
-		TT_UNKNOWN = -1,
-		TT_GRASS,
-		TT_ROAD
+		ST_UNKNOWN = -1,
+		ST_GRASS,
+		ST_ROAD
 	};
 
 	static void loadFromFile(std::string path);

@@ -162,7 +162,7 @@
   </tile>
  </tileset>
  <tileset firstgid="86" name="barrel_chest" tilewidth="14" tileheight="16" tilecount="4" columns="4">
-  <image source="../textures/Chests/barrel_chest.png" width="56" height="16"/>
+  <image source="../textures/Chests/barrel.png" width="56" height="16"/>
   <tile id="0">
    <objectgroup draworder="index" id="2">
     <object id="1" x="0" y="13" width="14" height="3"/>
@@ -176,7 +176,7 @@
   </tile>
  </tileset>
  <tileset firstgid="90" name="luxury_chest" tilewidth="30" tileheight="39" tilecount="6" columns="6">
-  <image source="../textures/Chests/luxury_chest.png" width="180" height="39"/>
+  <image source="../textures/Chests/luxury.png" width="180" height="39"/>
   <tile id="0">
    <objectgroup draworder="index" id="2">
     <object id="1" x="0" y="36" width="29" height="3"/>
@@ -192,7 +192,7 @@
   </tile>
  </tileset>
  <tileset firstgid="96" name="medium_chest" tilewidth="28" tileheight="17" tilecount="5" columns="5">
-  <image source="../textures/Chests/medium_chest.png" width="140" height="17"/>
+  <image source="../textures/Chests/medium.png" width="140" height="17"/>
   <tile id="0">
    <objectgroup draworder="index" id="2">
     <object id="1" x="0" y="15" width="28" height="2"/>
@@ -207,7 +207,7 @@
   </tile>
  </tileset>
  <tileset firstgid="101" name="small_chest" tilewidth="12" tileheight="16" tilecount="5" columns="5">
-  <image source="../textures/Chests/small_chest.png" width="60" height="16"/>
+  <image source="../textures/Chests/small.png" width="60" height="16"/>
   <tile id="0">
    <objectgroup draworder="index" id="2">
     <object id="1" x="0" y="14" width="12" height="2"/>
@@ -222,7 +222,7 @@
   </tile>
  </tileset>
  <tileset firstgid="106" name="surprise_chest" tilewidth="30" tileheight="39" tilecount="10" columns="10">
-  <image source="../textures/Chests/surprise_chest.png" width="300" height="39"/>
+  <image source="../textures/Chests/surprise.png" width="300" height="39"/>
   <tile id="0">
    <objectgroup draworder="index" id="2">
     <object id="1" x="0" y="36" width="29" height="3"/>

@@ -5,18 +5,22 @@
 #include "Player.hpp"
 #include "Enemy.hpp"
 #include "SoundRegister.hpp"
+#include "Settings.hpp"
 
-#define CRINGE_IMPACT_VERSION	"0.2.1a"
+#include <imgui.h>
+#include <imgui-sfml.h>
+
+#define CRINGE_IMPACT_VERSION	"0.2.2a"
 
 Client::Client()
 {
 	SoundRegister::loadAllFromDirectory("data/audio/sound/");
 	World::loadFromFile("data/map/map.tmx");
 	m_window.create(sf::VideoMode(1600, 800), std::string("Cringe Impact v") + CRINGE_IMPACT_VERSION);
+	ImGui::SFML::Init(m_window);
 
-	sf::Image cursor_image;
-	cursor_image.loadFromFile("data/textures/pointer.png");
-	m_cursor.loadFromPixels(cursor_image.getPixelsPtr(), cursor_image.getSize(), sf::Vector2u(0, 0));
+	m_cursor_image.loadFromFile("data/textures/pointer.png");
+	m_cursor.loadFromPixels(m_cursor_image.getPixelsPtr(), m_cursor_image.getSize(), sf::Vector2u(0, 0));
 	m_window.setMouseCursor(m_cursor);
 
 	m_camera.setSize((sf::Vector2f)m_window.getSize());
@@ -27,6 +31,8 @@ Client::Client()
 	m_fps.setFillColor(sf::Color(255, 255, 255));
 	m_fps.setPosition(sf::Vector2f(50, 10));
 	m_fps.setCharacterSize(20u);
+
+	m_is_need_resolve = false;
 }
 
 void Client::run()
@@ -78,19 +84,25 @@ void Client::run()
 	float respawn_timer = 3.8f;
 
 	sf::Clock clock;
-	while (m_window.isOpen())
+	while (Settings::is_game_runing)
 	{
-		float tick = clock.restart().asSeconds();
+		sf::Time elapsed_time = clock.restart();
+		float tick = elapsed_time.asSeconds();
 		m_fps.setString("FPS: " + std::to_string((int)round(1.f / tick)));
 
 		sf::Event event;
 		while (m_window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed) m_window.close();
+			ImGui::SFML::ProcessEvent(event);
+			if (event.type == sf::Event::Closed) Settings::is_game_runing = false;
 			if (event.type == sf::Event::KeyPressed)
 			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) m_window.close();
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde))
+				{
+					Settings::is_console_shown = !Settings::is_console_shown;
+					if (!Settings::is_console_shown) m_window.setMouseCursor(m_cursor);
+				}
+				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
 				{
 					for (auto it = loot.begin(); it != loot.end(); it++)
 					{
@@ -105,12 +117,14 @@ void Client::run()
 			}
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !Settings::is_console_shown)
 				{
 					player.attack(this->getAbsoluteCursorPosition(), enemy_list);
 				}
 			}
 		}
+
+		if (Settings::is_console_shown) ImGui::SFML::Update(m_window, elapsed_time);
 
 		if (player.isDead())
 		{
@@ -122,8 +136,9 @@ void Client::run()
 			else respawn_timer -= tick;
 		}
 
-		player.control(tick, solid_objects);
+		if (!Settings::is_console_shown) player.control(tick, solid_objects);
 		m_camera.setCenter(RoundVector(player.getPosition()));
+		//sf::Listener::setPosition(player.getPosition().x, player.getPosition().y, 0);
 
 		World::setCameraRect(this->getCameraRect());
 		World::update();
@@ -132,13 +147,9 @@ void Client::run()
 		m_window.clear();
 		World::render(m_window);
 
-		for (auto it = loot.begin(); it != loot.end(); it++)
-			(*it)->setListenerPosition(player.getPosition());
-
 		for (auto it = enemy_list.begin(); it != enemy_list.end(); it++)
 		{
 			Enemy* cur_it = (Enemy*)*it;
-			cur_it->setListenerPosition(player.getPosition());
 			cur_it->behave(tick, players_list, solid_objects);
 		}
 
@@ -154,6 +165,7 @@ void Client::run()
 		this->drawInterface();
 		m_window.display();
 	}
+	m_window.close();
 	World::release();
 	Animation::release();
 	SoundRegister::clear();
@@ -167,6 +179,11 @@ void Client::drawInterface()
 	// Draw iterface below
 	m_window.draw(m_fps);
 
+	if (Settings::is_console_shown)
+	{
+		this->renderConsole();
+		ImGui::SFML::Render(m_window);
+	}
 	m_window.setView(m_camera);
 }
 
@@ -183,4 +200,38 @@ sf::Vector2f Client::getAbsoluteCursorPosition()
 sf::IntRect Client::getCameraRect()
 {
 	return sf::IntRect((sf::Vector2i)(m_camera.getCenter() - (m_camera.getSize() / 2.f)), (sf::Vector2i)m_camera.getSize());
+}
+
+void Client::renderConsole()
+{
+	ImGui::Begin("Console");
+
+	ImGui::BeginChild("Logs", sf::Vector2f(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - 25.f), true);
+	for (std::string& str : m_console_log)
+		ImGui::Text("%s", str.c_str());
+
+	if (m_is_need_resolve)
+	{
+		ImGui::SetScrollY(ImGui::GetScrollMaxY() + 50.f);
+		m_is_need_resolve = false;
+	}
+
+	ImGui::EndChild();
+
+	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+	if (ImGui::InputText("", &m_console_input, ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		m_console_log.push_back("> " + m_console_input);
+		this->handleCommand(m_console_input);
+		m_console_input = "";
+		m_is_need_resolve = true;
+		ImGui::SetKeyboardFocusHere(-1);
+	}
+	ImGui::PopItemWidth();
+	ImGui::End();
+}
+
+void Client::handleCommand(std::string line)
+{
+	
 }

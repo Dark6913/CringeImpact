@@ -34,7 +34,7 @@ public:
 	static void clearSoundSourceQueue();
 
 	// Check is sound source existing
-	static bool isExisting(sf::SoundSource* source);
+	static bool isSourceExisting(sf::SoundSource* source);
 private:
 	// Private constructor to avoid creating an instances
 	SoundRegister() {};

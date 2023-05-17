@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-int main(int argc, char* argv[])
+int main()
 {
     Client client;
     client.run();

@@ -52,10 +52,10 @@ Enemy::Enemy()
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(36, 40), sf::Vector2f(52, 88), 1.0f, this));
 
 	// Sound
-	m_walk_sound_ptr = SoundRegister::createSound("player-walk-grass", 100.f, true);
+	m_walk_sound_ptr = SoundRegister::createSound("player-walk-grass", 10.f, true);
 	m_death_sound_ptr = SoundRegister::createSound("coal-death", 50.f);
 	m_hit_sound_ptr = SoundRegister::createSound("coal-hit", 10.f);
-	m_hurt_sound_ptr = SoundRegister::createSound("coal-hurt", 30.f);
+	m_hurt_sound_ptr = SoundRegister::createSound("coal-hurt", 10.f);
 }
 
 void Enemy::moveTo(sf::Vector2f point)
@@ -170,9 +170,6 @@ void Enemy::behave(float tick, std::list<Entity*> players_list, std::list<Solid*
 
 		if (m_walk_sound_ptr)
 		{
-			float walk_sound_volume = 20.f * (1.f - VectorModule(m_listener_position - m_position) / 1000.f);
-			if (walk_sound_volume < 0) walk_sound_volume = 0;
-			m_walk_sound_ptr->setVolume(walk_sound_volume);
 			if (!m_is_walk_sound_play)
 			{
 				m_walk_sound_ptr->play();

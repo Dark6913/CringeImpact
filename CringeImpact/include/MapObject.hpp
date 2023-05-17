@@ -10,7 +10,6 @@ class MapObject : public IAnimated, public Solid
 public:
 	MapObject();
 	void setPosition(sf::Vector2f position);
-	void setListenerPosition(sf::Vector2f listener_pos);
 	void loadAnimation(sf::Texture& texture, uint8_t frames_count, uint8_t rows_count,
 		float frame_duration, sf::Vector2f scale = { 1.f, 1.f }, sf::Vector2f origin = {0.f, 0.f});
 	void loadAnimation(std::string file, uint8_t frames_count, uint8_t rows_count,
@@ -27,7 +26,6 @@ protected:
 
 	sf::Vector2f m_position;
 	Animation* m_animation_ptr;
-	sf::Vector2f m_listener_position;
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

@@ -15,11 +15,6 @@ void MapObject::setPosition(sf::Vector2f position)
 	if (m_animation_ptr) m_animation_ptr->setPosition(m_position);
 }
 
-void MapObject::setListenerPosition(sf::Vector2f listener_pos)
-{
-	m_listener_position = listener_pos;
-}
-
 void MapObject::loadAnimation(sf::Texture& texture, uint8_t frames_count, uint8_t rows_count,
 	float frame_duration, sf::Vector2f scale, sf::Vector2f origin)
 {

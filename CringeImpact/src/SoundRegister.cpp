@@ -8,7 +8,6 @@ std::set<sf::SoundSource*> SoundRegister::m_sounds_set;
 
 void SoundRegister::loadAllFromDirectory(std::string path)
 {
-	SoundRegister::clearBufferMap();
 	if (!(path.back() == '/' || path.back() == '\\')) path += '/';
 	try
 	{
@@ -100,7 +99,7 @@ void SoundRegister::clearSoundSourceQueue()
 	}
 }
 
-bool SoundRegister::isExisting(sf::SoundSource* source)
+bool SoundRegister::isSourceExisting(sf::SoundSource* source)
 {
 	return m_sounds_set.find(source) != m_sounds_set.end();
 }

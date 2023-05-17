@@ -105,13 +105,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)CringeImpact\include;$(SolutionDir)CringeImpact\libraries\SFML\include;$(SolutionDir)CringeImpact\libraries\tinytmx\include;$(SolutionDir)CringeImpact\libraries\imgui;$(SolutionDir)CringeImpact\libraries\imgui-sfml</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CringeImpact\include;$(SolutionDir)CringeImpact\libraries\SFML\include;$(SolutionDir)CringeImpact\libraries\tinytmx\include;$(SolutionDir)CringeImpact\libraries\imgui;$(SolutionDir)CringeImpact\libraries\imgui-sfml;$(SolutionDir)CringeImpact\libraries\imgui\misc\cpp</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;sfml-graphics-d.lib;%(AdditionalDependencies);tinyxml2.lib;zlib.lib;zstd.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)CringeImpact\libraries\SFML\lib;$(SolutionDir)CringeImpact\libraries\tinytmx\lib</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,17 +124,18 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)CringeImpact\include;$(SolutionDir)CringeImpact\libraries\SFML\include;$(SolutionDir)CringeImpact\libraries\tinytmx\include;$(SolutionDir)CringeImpact\libraries\imgui;$(SolutionDir)CringeImpact\libraries\imgui-sfml</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CringeImpact\include;$(SolutionDir)CringeImpact\libraries\SFML\include;$(SolutionDir)CringeImpact\libraries\tinytmx\include;$(SolutionDir)CringeImpact\libraries\imgui;$(SolutionDir)CringeImpact\libraries\imgui-sfml;$(SolutionDir)CringeImpact\libraries\imgui\misc\cpp</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-network.lib;sfml-graphics.lib;%(AdditionalDependencies);tinyxml2.lib;zlib.lib;zstd.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)CringeImpact\libraries\SFML\lib;$(SolutionDir)CringeImpact\libraries\tinytmx\lib</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -143,6 +145,7 @@
     <ClCompile Include="libraries\imgui\imgui_draw.cpp" />
     <ClCompile Include="libraries\imgui\imgui_tables.cpp" />
     <ClCompile Include="libraries\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="libraries\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="libraries\tinytmx\src\base64.cpp" />
     <ClCompile Include="libraries\tinytmx\src\tinytmxColor.cpp" />
     <ClCompile Include="libraries\tinytmx\src\tinytmxDataChunkTile.cpp" />
@@ -179,6 +182,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MapObject.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\Solid.cpp" />
     <ClCompile Include="src\SoundRegister.cpp" />
     <ClCompile Include="src\Tree.cpp" />
@@ -196,6 +200,7 @@
     <ClInclude Include="include\IAnimated.hpp" />
     <ClInclude Include="include\MapObject.hpp" />
     <ClInclude Include="include\Player.hpp" />
+    <ClInclude Include="include\Settings.hpp" />
     <ClInclude Include="include\Solid.hpp" />
     <ClInclude Include="include\SoundRegister.hpp" />
     <ClInclude Include="include\Tree.hpp" />

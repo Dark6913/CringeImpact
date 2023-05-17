@@ -34,12 +34,14 @@ Player::Player()
 	m_attack_range = 80.f;
 	m_attack_damage = 25.f;
 
+	m_last_st = World::ST_UNKNOWN;
+
 	// Hitboxes
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(20, 4), sf::Vector2f(40, 40), 2.f, this));
 	m_hitboxes_list.push_back(Hitbox(sf::Vector2f(16, 44), sf::Vector2f(48, 84), 1.0f, this));
 
 	// Sound
-	m_walk_sound_ptr = SoundRegister::createSound("player-walk-grass", 20.f, true);
+	m_walk_sound_ptr = NULL;
 	m_hit_sound_ptr = SoundRegister::createSound("player-hit", 20.f);
 	m_hurt_sound_ptr = SoundRegister::createSound("player-hurt", 20.f);
 	m_death_sound_ptr = SoundRegister::createSound("player-death", 20.f);
@@ -81,6 +83,37 @@ void Player::control(float tick, std::list<Solid*> solid_list)
 	if (is_key_pressed && !m_is_dead)
 	{
 		if (!m_is_attacking) m_animation_ptr->setCurrentRow(move_dir);
+
+		World::SurfaceType st = World::getSurfaceType(
+			sf::Vector2f(
+				this->getVisibleBounds().left + this->getVisibleBounds().width / 2.f,
+				this->getVisibleBounds().top + this->getVisibleBounds().height
+			)
+		);
+
+		if (m_last_st != st)
+		{
+			if (SoundRegister::isExisting(m_walk_sound_ptr))
+			{
+				m_walk_sound_ptr->stop();
+				SoundRegister::remove(m_walk_sound_ptr);
+			}
+
+			switch (st)
+			{
+			case World::ST_GRASS:
+				m_walk_sound_ptr = SoundRegister::createSound("player-walk-grass", 30.f, true);
+				break;
+			case World::ST_ROAD:
+				m_walk_sound_ptr = SoundRegister::createSound("player-walk-road", 30.f, true);
+				break;
+			default:
+				m_walk_sound_ptr = NULL;
+				break;
+			}
+			if (m_is_walk_sound_plays) m_walk_sound_ptr->play();
+			m_last_st = st;
+		}
 
 		if (!m_is_walk_sound_plays)
 		{

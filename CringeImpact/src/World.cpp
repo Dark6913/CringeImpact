@@ -216,9 +216,9 @@ World::SurfaceType World::getSurfaceType(sf::Vector2f coord)
 	offset = (offset == source.npos) ? 0 : offset + 1;
 	std::string str_type = source.substr(offset, source.rfind('.') - offset);
 	
-	if (str_type == "grass") return TT_GRASS;
-	else if (str_type == "road") return TT_ROAD;
-	else return TT_UNKNOWN;
+	if (str_type == "grass") return ST_GRASS;
+	else if (str_type == "road") return ST_ROAD;
+	else return ST_UNKNOWN;
 }
 
 Solid* World::getMapCollision()
